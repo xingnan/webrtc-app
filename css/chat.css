@@ -1,0 +1,181 @@
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+#content {
+	width: 100%;
+	height: 100%;
+	min-height: 500px;
+	min-width: 800px;
+
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+#leftPanel {
+	width: 250px;
+	height: 100%;
+	float: left;
+
+	background-color: #ddd;
+}
+
+#selfPanel {
+	width: 100%;
+	height: 80px;
+	box-shadow: inset 0px 0px 3px 3px #cccccc;
+}
+
+.status {
+	width: 16px;
+	height: 16px;
+
+	float: left;
+	margin: 0px 10px;
+}
+
+.online {
+	background: url("../image/status.png") 16px 0px;
+}
+
+.busy {
+	background: url("../image/status.png") 0px 0px;
+}
+
+.offline {
+	background: url("../image/status.png") 0px 16px;
+}
+
+#selfPanel > img {
+	margin: 17px;
+	float: left;
+}
+
+#selfDetail {
+	padding: 20px 20px 20px 80px;
+}
+
+#personPanel {
+	padding: 10px 0px;
+    overflow: auto;
+    max-height: 200px;
+}
+
+.personDetail {
+	height: 20px;
+	padding: 5px;
+}
+
+.personName {
+    float: left;
+    margin-right: 10px;
+}   
+
+.personHead {
+    padding: 10px;
+    background: -webkit-linear-gradient(top, #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%);
+    font-size: 12px;
+}
+
+#otherHead {
+    cursor: pointer;
+}
+
+#otherUser {
+    max-height: 200px;
+    overflow: auto;
+    display: none;
+	padding: 10px 0px;
+}
+
+.userOper {
+    float: right;
+    margin: 0px 10px;
+    display: none;
+}
+
+#rightPanel {
+	height: 100%;
+	margin-left: 250px;
+}
+
+#rightUp {
+	width: 100%;
+	height: 100%;
+	margin-bottom: -150px;
+}
+
+#videoPanel {
+	height: 100%;
+	margin-right: 250px;
+
+	background-color: #aaa;
+}
+
+#videoLoading {
+	padding: 20px;
+}
+
+#textPanel {
+	width: 250px;
+	height: 100%;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+
+	background-color: #ddd;
+}
+
+#inputPanel {
+	position: absolute;
+	bottom: 10px;
+	width: 100%;
+}
+
+#chatInput {
+	width: 160px;
+	height: 20px;
+	margin-left: 10px;
+}
+
+#chatSend {
+	width: 60px;
+	height: 25px;
+}
+
+#rightBottom {
+	height: 150px;
+	margin-right: 250px;
+
+	background-color: #333;
+}
+
+#effectPanel {
+	height: 30px;
+	float: left;
+	overflow: hidden;
+}
+
+#effectMain {
+	padding: 10px;
+}
+
+.effectBtn {
+	width: 80px;
+}
+
+#wavePanel {
+	height: 120px;
+	padding-top: 30px;
+}
+
+#waveMain {
+	padding: 0px 10px;
+}
+
+.shadow {
+	-webkit-box-shadow: inset 0px 0px 5px 2px rgba(200, 200, 200, 1);
+	box-shadow: inset 0px 0px 5px 2px rgba(200, 200, 200, 1);
+}
