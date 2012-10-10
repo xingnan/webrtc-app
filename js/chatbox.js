@@ -37,6 +37,7 @@ function MyInfo(jid) {
 	this.fullJid = jid;
 	this.bareJid = Strophe.getBareJidFromJid(jid);
 	this.name = this.bareJid;
+	this.rosters = new Array();
 }
 
 var myInfo;
@@ -58,8 +59,12 @@ var Gab = {
     //handle the roster list
     on_roster: function (iq) {
         $(iq).find('item').each(function () {
+            // Store rosters
+            myInfo.rosters.push($(this));
             var jid = $(this).attr('jid');
             var name = $(this).attr('name') || Strophe.getNodeFromJid(jid);
+            // Hack
+            $('#myPeer').text(name);
             // transform jid into an id
             var jid_id = Gab.jid_to_id(jid);
 
@@ -72,72 +77,10 @@ var Gab = {
             }
            
             if (showStatus == "online"){
-             
-
-                var contact = $('<div class="contact" id="'+jid_id+'">'+
-                                    '<div class="usericon1">'+
-									    '<li>'+
-                                        '<img id="userimg" src="images/online.png" width="15" height="15" alt="icon">'+'</li>'+
-										'<li>'+'<img src="images/headsmall.png" width="25" height="25" alt="icon">'+'</li>'+
-                                    '</div>'+
-                                    '<div class="contactinfo '+showStatus+'">'+
-                                        '<div class="contactname">'+
-                                            name+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contacttextchat">'+
-                                            '<img id="textimg" src="images/textchat.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "textchat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contactnameforward">'+
-                                            '<img id="forwardimg" src="images/forward.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "forward" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="video-chat">'+
-                                            '<img id="video-chatimg" src="images/video.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "video-chat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contactshare contactjid">'+
-                                            showJid+
-                                        '</div>'+
-				    '</div>'+
-                                '</div>');
             } else {
-                var contact = $('<div class="contact" id="'+jid_id+'">'+
-                                    '<div class="usericon1">'+
-                                        '<li>'+
-                                        '<img id="userimg" src="images/offline.png" width="15" height="15" alt="icon">'+'</li>'+
-										'<li>'+'<img src="images/headsmall.png" width="25" height="25" alt="icon">'+'</li>'+
-                                    '</div>'+
-                                    '<div class="contactinfo '+showStatus+'">'+
-                                        '<div class="contactname">'+
-                                            name+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contacttextchat">'+
-                                            '<img id="textimg" src="images/textchat.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "textchat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contactnameforward">'+
-                                            '<img id="forwardimg" src="images/forward.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "forward" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="video-chat">'+
-                                            '<img id="video-chatimg" src="images/video.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "videochat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contactshare contactjid">'+
-                                            showJid+
-                                        '</div>'+
-				    '</div>'+
-                                '</div>');
             }
  
-            Gab.insert_contact(contact);
+            //Gab.insert_contact(contact);
         });
 
         // set up presence handler and send initial presence`
@@ -152,38 +95,6 @@ var Gab = {
         var ptype = $(presence).attr('type');
         var from = $(presence).attr('from');
         var jid_id = Gab.jid_to_id(from);
-		//following codes for mixserver forwarding
-		/*
-         if (ptype == undefined && from.substring(0, from.indexOf("@")) == myInfo.name && from != myInfo.fullJid) {
-            jid_id = from.replace("@", "-").replace("/", "-");
-            var showJid = from.split("/");
-        //    var name= from.substring(0,from.indexOf("@"));
-            var contact = $('<div class="contact" id="'+jid_id+'">'+
-                                '<div class="usericon1">'+
-                                    '<li>'+
-                                        '<img id="userimg" src="images/offline.png" width="15" height="15" alt="icon">'+'</li>'+
-										'<li>'+'<img src="images/headsmall.png" width="25" height="25" alt="icon">'+'</li>'+
-                                '</div>'+
-                                '<div class="contactinfo online">'+
-                                    '<div class="contactname">'+
-                                       name+
-                                   '</div>'+
-                                      '<div class="contacttextchat" id="contacttestchat">'+
-                                        '<img id="textimg" src="images/textchat.png" width="25" height="25" alt="icon">'+
-                                      '</div>'+
-                                      '<div class="contactnameforward" id="forward">'+
-                                       '<img id="forwardimg" src="images/forward.png" width="25" height="25" alt="icon">'+
-                                      '</div>'+
-                                    '<div class="contactshare contactjid">'+
-                                        showJid[1]+
-                                    '</div>'+
-				'</div>'+
-                            '</div>');
-      
-            Gab.insert_contact(contact);
-        }
-//
-*/
         if (ptype === 'unavailable' && from.substring(0, from.indexOf("@")) == myInfo.name) {
             jid_id = from.replace("@", "-").replace("/", "-");
             $('#' + jid_id).remove();
@@ -234,6 +145,7 @@ var Gab = {
 
     //when rosters have been added or removed, or changed names
     on_roster_changed: function (iq) {
+        // FIXME 
         $(iq).find('item').each(function () {
             var sub = $(this).attr('subscription');
             var jid = $(this).attr('jid');
@@ -273,13 +185,14 @@ var Gab = {
         var jid = Strophe.getBareJidFromJid(full_jid);
         var jid_id = Gab.jid_to_id(jid);
         
-		var forwardingMsg = $(message).find('video-forwarding');
+        var forwardingMsg = $(message).find('video-forwarding');
         //if there isn't chat tab in the chat aera, create one
+        // FIXME: binding text Chat
         if (($('#chat-tab-' + jid_id).length === 0) && (forwardingMsg.length<=0)) {
             startTextChat(jid, Strophe.getNodeFromJid(jid));
         }
         
-        $('#inputbox').focus();
+        //$('#inputbox').focus();
         //fowarding-handshake information
 		var forwardingMsg = $(message).find('video-forwarding');
 		 if(forwardingMsg.length>0){
@@ -292,7 +205,8 @@ var Gab = {
         	handleVideoMsg(message);
             return true;
         }
-        
+
+        // FIXME: Binding text chat
         //if it is a chat text message
         var body = $(message).find("html > body");
         if (body.length === 0) {
@@ -383,13 +297,10 @@ var Gab = {
     
     resolveMyInfo: function(iq) {
     	var fullJid = $(iq).attr('to');
-    	var name = $(iq).find("query").find("name").text();
+    	//var name = $(iq).find("query").find("name").text();
     	myInfo = new MyInfo(fullJid);
-    	if(name!=null) {
-    		myInfo.name = name;
-    	}
-    	$('#myname').text(myInfo.name);
-    	$('#mystatus').text(UserStatus.AVAILABLE);
+    	$('#selfName').text(Strophe.getNodeFromJid(fullJid));
+    	//$('#mystatus').text(UserStatus.AVAILABLE);
     },
     
     scroll_chat: function (jid_id) {

@@ -79,7 +79,7 @@ $(document).bind('connect', function (ev, data) {
             conn.disconnect();
             setCookie("jid", data.jid);
             setCookie("password", data.password);
-	    window.location.href = serverCodeAddr + "/WooGeen.html";
+	    window.location.href = serverCodeAddr + "/chat.html";
         } else if(status===Strophe.Status.AUTHFAIL){
         	$('#login_msg').text("Login failed. Please check your user name and password.");
         	$('#login_dialog').dialog('open');

@@ -4,8 +4,12 @@
 		<link rel="stylesheet" type="text/css" href="css/chat.css" />
 
 		<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+		<script type="text/javascript" src="js/strophe.js"></script>
 		<script type="text/javascript" src="js/wave.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/chatbox.js"></script>
+		<script type="text/javascript" src="js/webaudio.js"></script>
+		<script type="text/javascript" src="js/webrtc.js"></script>
 	</head>
 	<body>
 		<div id="content">
@@ -24,28 +28,7 @@
 				<div id="personPanel">
 					<div class="personDetail"> 
 						<div class="status online"></div>
-						<div class="personName">Client 2</div>
-                        <div class="userOper">
-                            <img src="image/minus.png" alt="delete user" class="deleteUser" />
-                        </div>
-					</div><!-- personDetail -->
-					<div class="personDetail"> 
-						<div class="status offline"></div>
-						<div class="personName">Client 3</div>
-                        <div class="userOper">
-                            <img src="image/minus.png" alt="delete user" class="deleteUser" />
-                        </div>
-					</div><!-- personDetail -->
-					<div class="personDetail"> 
-						<div class="status online"></div>
-						<div class="personName">Client 4</div>
-                        <div class="userOper">
-                            <img src="image/minus.png" alt="delete user" class="deleteUser" />
-                        </div>
-					</div><!-- personDetail -->
-					<div class="personDetail"> 
-						<div class="status busy"></div>
-						<div class="personName">Client 5</div>
+						<div class="personName" id="myPeer">Client 2</div>
                         <div class="userOper">
                             <img src="image/minus.png" alt="delete user" class="deleteUser" />
                         </div>
