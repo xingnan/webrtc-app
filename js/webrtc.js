@@ -192,12 +192,5 @@ function gotStreamFailed(error) {
 }
 
 function trace(txt) {
-//	console.log(txt);
-	if(isdebug==false) {
-		$('#debug').addClass("hidden");
-	} else {
-		$('#debug').removeClass("hidden");
-	}
-	var elem = document.getElementById("debug");
-	elem.innerHTML += txt + "<br>";
+	console.log(txt);
 }

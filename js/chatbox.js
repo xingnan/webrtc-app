@@ -59,10 +59,10 @@ var Gab = {
     //handle the roster list
     on_roster: function (iq) {
         $(iq).find('item').each(function () {
-            // Store rosters
-            myInfo.rosters.push($(this));
             var jid = $(this).attr('jid');
             var name = $(this).attr('name') || Strophe.getNodeFromJid(jid);
+            // Store rosters
+            myInfo.rosters.push(jid);
             // Hack
             $('#myPeer').text(name);
             // transform jid into an id
@@ -330,12 +330,9 @@ function initPage() {
         startTextChat(jid, name);
     });
 
-    $('#video-chat').live('click', function () {
-        var jid = $(this).parent().find(".contactjid").text();
-        var name = $(this).parent().find(".contactname").text();
-           var a = $(this).prev().text();
-        var b = $(this).next().next().text();
-        startVideoChat(jid);
+    $('#myPeer').live('click', function () {
+        // FIXME: Handle the situation of 1+ rosters.
+        startVideoChat(myInfo.rosters[0]);
     });
     //forward chat
      $('#contactnameforward').live('click',function (){
@@ -519,14 +516,7 @@ function initPage() {
     });
     
     $('#video-ok').click(function() {
-           $('#text_logo').addClass("hidden");
-        $('#intel_logo').addClass("hidden");
-        $('#biglogo').addClass("hidden");
-          $('#videobox-f').removeClass("hidden");
-          $('#remoteView').removeClass("hidden");
-           $('#R5').css("background-image","url(./images/white.png");
-           $('#R5').css("background-color","transparent");
-
+    //function agreeVideo() {
         if(local_stream==null) {
         	trace("trying to get user media");
 			navigator.webkitGetUserMedia({audio: true, video: true}, gotStream, gotStreamFailed);
@@ -1013,9 +1003,29 @@ console.log(message);
     return true;
 }
 
+function agreeVideo() {
+        if(local_stream==null) {
+        	trace("trying to get user media");
+			navigator.webkitGetUserMedia({audio: true, video: true}, gotStream, gotStreamFailed);
+		} else {
+			trace("local stream not null!");
+			if(local_stream.tracks[1]) {
+				local_stream.tracks[1].enabled = true;
+			}
+			if(local_stream.tracks[0]) {
+				local_stream.tracks[0].enabled = true;
+			}
+	    	var videoAgree = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-agree"});
+	        Gab.connection.send(videoAgree);
+	        gCurrVideoJid = videoInvitor;
+	        gVideoChatState = VideoState.VIDEO_STATE_CONNECTED;
+		}
+}
+
 function showVideoInit() {
-	$('#video-from').text(Strophe.getBareJidFromJid(videoInvitor));
-	$('#video-invitation').removeClass("hidden");
+        agreeVideo();
+	//$('#video-from').text(Strophe.getBareJidFromJid(videoInvitor));
+	//$('#video-invitation').removeClass("hidden");
 }
 
 //return a new chat tab content
