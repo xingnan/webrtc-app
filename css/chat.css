@@ -20,12 +20,16 @@
 	float: left;
 
 	background-color: #ddd;
+	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
+}
+
+#logoPanel {
+    padding: 10px;
+    background: -webkit-linear-gradient(top, #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%);
 }
 
 #selfPanel {
-	width: 100%;
 	height: 80px;
-	box-shadow: inset 0px 0px 3px 3px #cccccc;
 }
 
 .status {
@@ -115,7 +119,32 @@
 }
 
 #videoLoading {
-	padding: 20px;
+    width: 300px;
+    margin: 0 auto;
+    padding: 200px;
+}
+
+#videoContent {
+    display: none;
+}
+
+#video-s {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    left: 250px;
+    top: 0px;
+    margin: 20px;
+    box-shadow: 1px 1px 5px 5px #666666;
+}
+
+#videoShadow {
+    position: absolute;
+    left: 250px;
+    top: 0px;
+    right: 250px;
+    bottom: 150px;
+	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
 }
 
 #textPanel {
@@ -126,6 +155,33 @@
 	top: 0px;
 
 	background-color: #ddd;
+}
+
+#chatPanel {
+    padding: 10px;
+    overflow: auto;
+    max-height: 90%;
+}
+
+.chatMsg {
+    margin-bottom: 8px;
+}
+
+.chatMsgName {
+    float: left;
+    margin-right: 20px;
+}
+
+.chatMsgTime {
+    color: #990;
+}
+
+.clientColor1 {
+    color: #360;
+}
+
+.clientColor2 {
+    color: #609;
 }
 
 #inputPanel {
@@ -176,6 +232,5 @@
 }
 
 .shadow {
-	-webkit-box-shadow: inset 0px 0px 5px 2px rgba(200, 200, 200, 1);
-	box-shadow: inset 0px 0px 5px 2px rgba(200, 200, 200, 1);
+	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
 }

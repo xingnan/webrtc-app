@@ -14,6 +14,10 @@
 	<body>
 		<div id="content">
 			<div id="leftPanel">
+                <div id="logoPanel">
+                    <img src="image/logobig.png" alt="logo" width="200px"/>
+                </div><!-- logoPanel -->
+
 				<div id="selfPanel">
 					<img src="image/avatar.png" alt="self_avatar" width="45px" height="45px" />
 					<div id="selfDetail">
@@ -57,18 +61,44 @@
 
 			<div id="rightPanel">
 				<div id="rightUp">
-					<div id="videoPanel" class="shadow">
-						<div id="videoLoading">Loading video...</div>
-            	                                <div class="video-f" id="video-f">
-                                                    <video width="100%" height="100%" id="remoteView" autoplay></video>
-                                                </div>
-                                                <div class="video-s" id="video-s" width="100%">
-                                                    <video width="100%" height="100%" id="localView"  autoplay ></video>
-                                                </div>
+					<div id="videoPanel">
+                        <!-- videoLoading will be hidden and videoContent will be shown when connected -->
+                        <div id="videoLoading">
+                            <img src="image/logobig.png" alt="logo" width="300px" />
+                        </div><!-- videoLoading -->
+                        <div id="videoContent">
+            	            <div class="video-f" id="video-f">
+                                <video width="100%" height="100%" id="remoteView" autoplay></video>
+                            </div>
+                            <div class="video-s" id="video-s" width="100%">
+                                <video width="100%" height="100%" id="localView"  autoplay ></video>
+                            </div>
+                        </div><!-- videoContent -->
+                        <!-- empty div for shadow only -->
+                        <div id="videoShadow"></div>
 					</div><!-- videoPanel -->
 					<div id="textPanel" class="shadow">
 						<div id="chatPanel">
-
+                            <div class="chatMsg">
+                                <div class="chatMsgName clientColor1">Client 1</div>
+                                <div class="chatMsgTime">2012-10-11 8:26:47</div>
+                                <div class="chatMsgText">Hello! This is Client 1.</div>
+                            </div><!-- chatMsg -->
+                            <div class="chatMsg">
+                                <div class="chatMsgName clientColor2">Client 2</div>
+                                <div class="chatMsgTime">2012-10-11 8:43:56</div>
+                                <div class="chatMsgText">Nice to meet you! This is Client 2.</div>
+                            </div><!-- chatMsg -->
+                            <div class="chatMsg">
+                                <div class="chatMsgName clientColor1">Client 1</div>
+                                <div class="chatMsgTime">2012-10-11 8:52:37</div>
+                                <div class="chatMsgText">We have something important to discuss by video chat. Are you available now?</div>
+                            </div><!-- chatMsg -->
+                            <div class="chatMsg">
+                                <div class="chatMsgName clientColor2">Client 2</div>
+                                <div class="chatMsgTime">2012-10-11 8:56:39</div>
+                                <div class="chatMsgText">Sure. Let's start!</div>
+                            </div><!-- chatMsg -->
 						</div><!-- chatPanel -->
 						<div id="inputPanel">
 							<input id="chatInput"></input>
@@ -77,7 +107,7 @@
 					</div><!-- textPanel -->
 				</div><!-- rightUp -->
 
-				<div id="rightBottom" class="shadow">
+				<div id="rightBottom">
 					<div id="effectPanel">
 						<div id="effectMain">
 							<button class="effectBtn">Effect1</button>
@@ -87,7 +117,7 @@
 							<button class="effectBtn">Effect5</button>
 						</div><!-- effect -->
 					</div><!-- effectPanel -->
-					<div id="wavePanel">
+					<div id="wavePanel" class="shadow">
 						<div id="waveMain">
 							<canvas id="waveCanvas"></canvas>
 						</div><!-- waveMain -->
