@@ -31,23 +31,9 @@ $(document).ready(function(){
 function drawWave() {
 	++frameCnt;
 	if (frameCnt % 8 == 0) { 
-		var buf = [];
-		if (waveBuf.length == 0) {
-			topBuf = [];
-			for (var i = 0; i < barCnt; ++i) {
-				var pos = Math.floor(Math.random() * pieceCnt);
-				buf.push(pos);
-				topBuf.push(pos - pieceGap / 2);
-			}
-		} else {
-			for (var i = 0; i < barCnt; ++i) {
-				var pos = waveBuf[i] + Math.round(
-						pieceMaxDelta * (Math.random() - 0.5));
-				if (pos < 0 || Math.random() > 0.9) pos = 0;
-				else if (pos > pieceCnt) pos = pieceCnt;
-				buf.push(pos);
-			}
-		}
+		var buf = new Array(barCnt);
+                soundEffect.getTimeDomainData(buf);
+                console.log(buf);
 		waveBuf = buf;
 	}
 

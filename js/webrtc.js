@@ -174,7 +174,7 @@ function gotStream(s) {
 
     // Insert the local media filter with audio
     soundEffect.init(local_stream);
-    soundEffect.use(2);
+    //soundEffect.use(2);
 
     //  $('#localView').play();
   //  moveChatArea("left");

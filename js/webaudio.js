@@ -51,6 +51,8 @@ function SoundEffect() {
     this.gain = null;
     this.convolverGain = null;
     this.analyser = null;
+    this.analyserData = new Uint8Array(2048);
+    this.analyserDataPos = 0;
 
     this.support = function () {
         if (this.context.createMediaStreamSource == undefined || this.context.createMediaStreamDestination == undefined) {
@@ -89,6 +91,10 @@ SoundEffect.prototype.init = function (stream) {
         this.context = new webkitAudioContext();
     var source = this.context.createMediaStreamSource(stream);
     var dest = this.context.createMediaStreamDestination();
+    this.analyser = this.context.createAnalyser();
+    source.connect(this.analyser);
+    this.analyser.connect(dest);
+
     this.gain = this.context.createGainNode();
     this.convolverGain = this.context.createGainNode();
     this.gain.gain.value = 1.0;
@@ -99,15 +105,10 @@ SoundEffect.prototype.init = function (stream) {
 
     this.convolver = this.context.createConvolver();
     source.connect(this.convolver);
-    //this.convolver.connect(this.convolverGain);
+    this.convolver.connect(this.convolverGain);
 
     this.convolverGain.connect(sumGain);
     sumGain.connect(dest);
-
-    // Realtime analyser
-    this.analyser = this.context.createAnalyser();
-    sumGain.connect(this.analyer);
-
 }
 
 SoundEffect.prototype.list = function () {
@@ -132,9 +133,16 @@ SoundEffect.prototype.none = function () {
     this.convolver.disconnect();
 }
 
-// array is tupe of Uint8Array, size of array should be 2048.
+// Type of array is Uint8Array, size of array should be 2048.
 SoundEffect.prototype.getTimeDomainData = function (array) {
-    if (!this.support())
+    if (!this.support() && !this.analyser)
         return;
-    this.analyser.getByteTimeDomainData(array);  
+
+    for (var i = 0; i < array.length; i++) {
+        array[i] = this.analyserData[this.analyserDataPos++] % 16;
+        if (this.analyserDataPos == 2048) {
+            this.analyser.getByteTimeDomainData(this.analyserData);  
+            this.analyserDataPos = 0;
+        }
+    }
 }
