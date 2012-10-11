@@ -1,32 +1,22 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Chatbox - Login</title>
-<link href="login.css" rel="stylesheet" type="text/css" />
-    <script src="scripts/jquery-1.7.js"></script>
-    <script src="scripts/strophe.js"></script>
-    <script src="login.js"></script>
-</head>
-<body>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/login.css" />
 
+		<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+		<script type="text/javascript" src="js/login.js"></script>
+    </head>
 
-<div class="container" id="container">
-	<div class="logo"><img src="images/logobig.png" width="245" height="47" /></div>
-	<div class="loginbar">
-    	<input class="account" id="jid" value="" />
-        <label><input class="checkbox" id="auto" name="auto" type="checkbox" value="Remember Me"/>Remember Me</label>
-  		<input class="password" type="password" id="password" value="" />
-        <a href="#" >Forget Password?</a>
-        <br>
-		<input name="Login" type="button" value="LOGIN" id="login" class="login"/>
-        <div id="registerdiv">No Account? <a href="register.html" id="registerlink">Register</a></div>
-	</div>
-	<div id="notediv">It`s a test edition and we only have two users to establish a session:<br>
-		---- name: a, ---- password: a<br>
-		---- name: b, ---- password: b
-	</div>
-	<div class="sotc">System Optimization Technology Center, Intel Inc.</div>
-</div>
-</body>
+    <body>
+        <div id="loginPanel">
+            <div id="logoPanel">
+                <img src="image/logobig.png" alt="logo" width="200px" height="39px" />
+            </div><!-- logoPanel -->
+
+            <div id="loginText">Login as:</div>
+            <div class="loginBtn alice">Alice</div>
+            <div class="loginBtn bob">Bob</div>
+        </div><!-- loginPanel -->
+    </body>
 </html>
+

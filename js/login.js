@@ -35,9 +35,20 @@ $(document).ready(function () {
     });
 
 	//remove item on the right click menu
-    $('#login').click(function () {
+    $('.loginBtn').click(function () {
+        var id = "none";
+        if ($(this).hasClass('alice')) {
+            console.log("Alice logged in");
+            id = 'Alice';
+        } else if ($(this).hasClass('bob')) {
+            console.log("Bob logged in");
+            id = 'Bob';
+        } else {
+            alert('Illegal because client name is neither Alice nor Bob!');
+            return;
+        }
     	$(document).trigger('connect', {
-            jid: $('#jid').val() + "@" + domain,// + "/" + device,
+            jid: id + "@" + domain,// + "/" + device,
             password: $('#password').val()
         });
     });
@@ -79,7 +90,7 @@ $(document).bind('connect', function (ev, data) {
             conn.disconnect();
             setCookie("jid", data.jid);
             setCookie("password", data.password);
-	    window.location.href = serverCodeAddr + "/WooGeen.html";
+	    window.location.href = serverCodeAddr + "/chat.html";
         } else if(status===Strophe.Status.AUTHFAIL){
         	$('#login_msg').text("Login failed. Please check your user name and password.");
         	$('#login_dialog').dialog('open');
