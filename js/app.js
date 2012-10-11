@@ -20,20 +20,34 @@ $(document).ready(function(){
         addMessage(1, "Client 1", $("#chatInput").val());
         $("#chatInput").val("");
     });
+
+    $(".startVideo").click(function(){
+        startVideo();
+    });
 });
+
+function startVideo() {
+    $("#videoLoading").hide();
+    $("#videoContent").show();
+}
 
 function deleteUser() {
     $("#otherUser").append($(this).parent().parent());
     $(this).parent().hide();
-    $(this).parent().append('<img src="image/add.png" alt="add user" class="addUser" />');
+    $(this).parent().append('<img src="image/add.png" alt="add user" class="addUser" title="Add this user" />');
     $(this).parent().find("img.addUser").click(addUser);
+    $(this).parent().find("img.startVideo").remove();
     $(this).parent().find("img.deleteUser").remove();
 }
 
 function addUser() {
     $("#personPanel").append($(this).parent().parent());
     $(this).parent().hide();
-    $(this).parent().append('<img src="image/minus.png" alt="delete user" class="deleteUser" />');
+    $(this).parent().append('<img src="image/video.png" alt="start video" class="startVideo" title="Start video chat" />');
+    $(".startVideo").click(function(){
+        startVideo();
+    });
+    $(this).parent().append('<img src="image/minus.png" alt="delete user" class="deleteUser" title="Delete this user" />');
     $(this).parent().find("img.deleteUser").click(deleteUser);
     $(this).parent().find("img.addUser").remove();
 }
