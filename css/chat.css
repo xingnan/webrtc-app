@@ -18,18 +18,21 @@
 	width: 250px;
 	height: 100%;
 	float: left;
+    padding: 0px 5px;
 
-	background-color: #ddd;
+	background-color: #CBE3B5;
 	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
 }
 
 #logoPanel {
-    padding: 10px;
-    background: -webkit-linear-gradient(top, #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%);
+    padding: 20px 20px 10px 20px;
 }
 
 #selfPanel {
 	height: 80px;
+    border-style: solid;
+    border-color: #6F855C;
+    border-width: 3px 0px 1px 0px;
 }
 
 .status {
@@ -78,9 +81,10 @@
 }   
 
 .personHead {
-    padding: 10px;
-    background: -webkit-linear-gradient(top, #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%);
-    font-size: 12px;
+    padding: 10px 20px;
+    background: -webkit-linear-gradient(top, #5e7b5b 0%,#577b57 50%,#527052 51%,#507453 100%);
+    font-family: courier, serif;
+    color: #CBE3B5;
 }
 
 #otherHead {
@@ -115,7 +119,7 @@
 	height: 100%;
 	margin-right: 250px;
 
-	background-color: #aaa;
+	background-color: #ECE2BC;
 }
 
 #videoLoading {
@@ -140,7 +144,7 @@
 
 #videoShadow {
     position: absolute;
-    left: 250px;
+    left: 260px;
     top: 0px;
     right: 250px;
     bottom: 150px;
@@ -154,11 +158,11 @@
 	right: 0px;
 	top: 0px;
 
-	background-color: #ddd;
+    background-color: #EBBBBD;
 }
 
 #chatPanel {
-    padding: 10px;
+    padding: 20px;
     overflow: auto;
     max-height: 90%;
 }
@@ -170,18 +174,22 @@
 .chatMsgName {
     float: left;
     margin-right: 20px;
+    font-family: courier, serif;
+    font-size: 12px;
 }
 
 .chatMsgTime {
-    color: #990;
+    color: #7D681E;
+    font-family: courier, serif;
+    font-size: 12px;
 }
 
 .clientColor1 {
-    color: #360;
+    color: #7B1E22;
 }
 
 .clientColor2 {
-    color: #609;
+    color: #43701B;
 }
 
 #inputPanel {
@@ -199,6 +207,8 @@
 #chatSend {
 	width: 60px;
 	height: 25px;
+    background-color: #7B1E22;
+    color: #EBBBBD;
 }
 
 #rightBottom {

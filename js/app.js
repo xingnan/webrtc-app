@@ -50,8 +50,7 @@ function addMessage(clientId, clientName, content) {
         msg += 'clientColor2';
     }
     var time = new Date();
-    var timeStr = time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate() + ' ' + 
-        time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
+    var timeStr = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
     msg += '">' + clientName + '</div><div class="chatMsgTime">' + timeStr + '</div><div class="chatMsgText">' + content + '</div></div>';
     $("#chatPanel").append(msg);
 }
