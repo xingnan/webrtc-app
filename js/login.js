@@ -39,17 +39,17 @@ $(document).ready(function () {
         var id = "none";
         if ($(this).hasClass('alice')) {
             console.log("Alice logged in");
-            id = 'Alice';
+            id = 'alice';
         } else if ($(this).hasClass('bob')) {
             console.log("Bob logged in");
-            id = 'Bob';
+            id = 'bob';
         } else {
             alert('Illegal because client name is neither Alice nor Bob!');
             return;
         }
     	$(document).trigger('connect', {
             jid: id + "@" + domain,// + "/" + device,
-            password: $('#password').val()
+            password: "rt24"
         });
     });
     
