@@ -37,7 +37,8 @@ Sound.prototype.load = function() {
     
     var sound = this;
     request.onload = function() {
-        sound.buffer = soundEffect.context.createBuffer(request.response, false);
+        // FIXME: When wrt supports wav, enable this. 
+        //sound.buffer = soundEffect.context.createBuffer(request.response, false);
         //sound.buffer = request.response;
         sound.loaded = true;
     }
@@ -135,14 +136,21 @@ SoundEffect.prototype.none = function () {
 
 // Type of array is Uint8Array, size of array should be 2048.
 SoundEffect.prototype.getTimeDomainData = function (array) {
-    if (!this.support() && !this.analyser)
+    if (!this.support() || !this.analyser)
         return;
 
     for (var i = 0; i < array.length; i++) {
-        array[i] = this.analyserData[this.analyserDataPos++] % 16;
-        if (this.analyserDataPos == 2048) {
-            this.analyser.getByteTimeDomainData(this.analyserData);  
-            this.analyserDataPos = 0;
-        }
+        var v = this.analyserData[this.analyserDataPos];
+        v -= 128;
+        v = v < 0 ? 0 : v;
+        v = v >= 16 ? 15 : v;
+        array[i] = v;
+        this.analyserDataPos += 2048/array.length;
+        this.analyserDataPos %= 2048;
+        //if (this.analyserDataPos == 2048) {
+         //   this.analyser.getByteTimeDomainData(this.analyserData);  
+          //  this.analyserDataPos = 0;
+        //}
     }
+    this.analyser.getByteTimeDomainData(this.analyserData);  
 }

@@ -33,7 +33,7 @@ function drawWave() {
 	if (frameCnt % 8 == 0) { 
 		var buf = new Array(barCnt);
                 soundEffect.getTimeDomainData(buf);
-                console.log(buf);
+                //console.log(buf);
 		waveBuf = buf;
 	}
 
