@@ -184,7 +184,6 @@ var Gab = {
         var full_jid = $(message).attr('from');
         var jid = Strophe.getBareJidFromJid(full_jid);
         var jid_id = Gab.jid_to_id(jid);
-console.log(full_jid + ", " + jid + ", " + jid_id);
         
         var forwardingMsg = $(message).find('video-forwarding');
         //if there isn't chat tab in the chat aera, create one
@@ -535,8 +534,6 @@ function initPage() {
     });
     
     $('#video-cancel').click(function() {
-    	var videoDeny = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-deny"});
-        Gab.connection.send(videoDeny);
         //$('#video-invitation').addClass("hidden");
     });
 	
@@ -846,14 +843,14 @@ function startVideoChat(gCurrChatJid) {
 		navigator.webkitGetUserMedia({audio: true, video: true}, gotStream, gotStreamFailed);
 		var intervalId = setInterval(function() {
 	//			if(local_stream!=null) {
-					gVideoChatState = VideoState.VIDEO_STATE_CONNECTING;
-					trace("sending an video chat invitation to "+jid);
-				    var videoInvt = $msg({to: jid, "type": "chat"}).c('video-chat', {type: "video-invitation"});
+		gVideoChatState = VideoState.VIDEO_STATE_CONNECTING;
+		trace("sending an video chat invitation to "+jid);
+		var videoInvt = $msg({to: jid, "type": "chat"}).c('video-chat', {type: "video-invitation"});
          // alert(videoInvt);				
-    Gab.connection.send(videoInvt);
-				    clearInterval(intervalId);
-//				}
-			}, 200);
+    		Gab.connection.send(videoInvt);
+		clearInterval(intervalId);
+//		}
+		}, 200);
 	} else {
 		trace("localstream not null!");
 		if(local_stream.tracks[1]) {
@@ -886,7 +883,6 @@ function startVideoChat(gCurrChatJid) {
 
 //has got a video sig msg from peer, handle it.
 function handleVideoMsg(message) {
-console.log(message);
 	var full_jid = $(message).attr('from');
     var jid = Strophe.getBareJidFromJid(full_jid);
     var jid_id = Gab.jid_to_id(jid);
@@ -904,7 +900,6 @@ console.log(message);
             videoInvitor = full_jid;
             gInvited = true;
             showVideoInit();
-		console.log("init");
             break;
     	case VideoState.VIDEO_STATE_CONNECTED:
     	case VideoState.VIDEO_STATE_CONNECTING:
@@ -990,11 +985,23 @@ function agreeVideo() {
 		}
 }
 
+function denyVideo() {
+    	var videoDeny = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-deny"});
+        Gab.connection.send(videoDeny);
+}
+
 function showVideoInit() {
-	console.log("show init");
-	addMessage(-1, 'System', 'You\'ve received a video chat request. <span class="videoMsg acceptVideoBtn">Accept</span> or <span class="videoMsg denyVideoBtn">Deny</span> it?');
+	addMessage(-1, 'System', 'You\'ve received a video chat request. Accept or deny it? <span class="videoMsg acceptVideoBtn">Accept</span><span class="videoMsg denyVideoBtn">Deny</span>');
 	$(".acceptVideoBtn").click(function(){
 		agreeVideo();
+		$(".videoMsg").removeClass("acceptVideoBtn")
+			.removeClass("denyVideoBtn")
+			.addClass("disabledVideoBtn");
+    		$("#videoLoading").hide();
+		$("#videoContent").show();
+	});
+	$(".denyVideoBtn").click(function(){
+		denyVideo();
 		$(".videoMsg").removeClass("acceptVideoBtn")
 			.removeClass("denyVideoBtn")
 			.addClass("disabledVideoBtn");

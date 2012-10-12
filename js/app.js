@@ -65,6 +65,7 @@ function addUser() {
 
 // TODO: clientId, clientName and time should be from the server. Currently use time on client side.
 function addMessage(clientId, clientName, content) {
+console.log("add msg");
     if (content == null || content == '') {
         return;
     }

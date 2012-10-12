@@ -127,7 +127,7 @@
 #videoLoading {
     width: 300px;
     margin: 0 auto;
-    padding: 200px;
+    padding-top: 200px;
 }
 
 #startAllVideo {
@@ -212,20 +212,25 @@
 
 .videoMsg {
     width: 50px;
-    padding: 10px;
+    margin: 5px 5px 0px 0px;
     color: #ddd;
+    box-shadow: inset 0px 0px 2px 2px #999;
+    border-radius: 2px;
 }
 
 .acceptVideoBtn {
-    color: #43701B;
+    background-color: #43701B;
+    cursor: pointer;
 }
 
 .denyVideoBtn {
-    color: #7B1E22;
+    background-color: #7B1E22;
+    cursor: pointer;
 }
 
 .disabledVideoBtn {
-    color: #ccc;
+    background-color: #ccc;
+    color: #333;
 }
 
 #inputPanel {
