@@ -32,6 +32,22 @@ $(document).ready(function(){
     $("#startAllVideo").click(function(){
         startVideo();
     });
+
+    $("#effect1").click(function(){
+        soundEffect.use(0);
+    });
+
+    $("#effect2").click(function(){
+        soundEffect.use(1);
+    });
+
+    $("#effect3").click(function(){
+        soundEffect.use(2);
+    });
+
+    $("#effect4").click(function(){
+        soundEffect.use(3);
+    });
 });
 
 function startVideo() {
@@ -88,3 +104,5 @@ function sendMessage() {
     sendTextMessage(myInfo.rosters[0], $("#chatInput").val());
     $("#chatInput").val("");
 }
+
+

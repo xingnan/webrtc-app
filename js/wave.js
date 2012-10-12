@@ -17,7 +17,7 @@ $(document).ready(function(){
 		topBuf = [];
 		frameCnt = 0;
 
-		setInterval(drawWave, 40);
+		setInterval(drawWave, 4);
 	} else {
 		alert("Canvas not enabled!");
 	}
@@ -37,11 +37,11 @@ function resize() {
 
 function drawWave() {
 	++frameCnt;
-	if (frameCnt % 8 == 0) { 
+	//if (frameCnt % 8 == 0) { 
 		var buf = new Array(barCnt);
                 soundEffect.getTimeDomainData(buf);
 		waveBuf = buf;
-	}
+	//}
 
 	// update top piece
 	for (var i = 0; i < barCnt; ++i) {

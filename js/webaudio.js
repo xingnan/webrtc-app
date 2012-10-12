@@ -1,3 +1,4 @@
+var analyserDataSize = 1024;
 var soundEffect = new SoundEffect();
 soundEffect.soundList = [
     new Sound("sounds/feedback-spring.wav", "spring reverb simulation"),
@@ -37,8 +38,7 @@ Sound.prototype.load = function() {
     
     var sound = this;
     request.onload = function() {
-        // FIXME: When wrt supports wav, enable this. 
-        //sound.buffer = soundEffect.context.createBuffer(request.response, false);
+        sound.buffer = soundEffect.context.createBuffer(request.response, false);
         //sound.buffer = request.response;
         sound.loaded = true;
     }
@@ -52,7 +52,7 @@ function SoundEffect() {
     this.gain = null;
     this.convolverGain = null;
     this.analyser = null;
-    this.analyserData = new Uint8Array(2048);
+    this.analyserData = new Uint8Array(analyserDataSize);
     this.analyserDataPos = 0;
 
     this.support = function () {
@@ -93,6 +93,7 @@ SoundEffect.prototype.init = function (stream) {
     var source = this.context.createMediaStreamSource(stream);
     var dest = this.context.createMediaStreamDestination();
     this.analyser = this.context.createAnalyser();
+    this.analyser.fftSize = analyserDataSize;
     source.connect(this.analyser);
     this.analyser.connect(dest);
 
@@ -134,7 +135,7 @@ SoundEffect.prototype.none = function () {
     this.convolver.disconnect();
 }
 
-// Type of array is Uint8Array, size of array should be 2048.
+// Type of array is Uint8Array, size of array should be analyserDataSize.
 SoundEffect.prototype.getTimeDomainData = function (array) {
     if (!this.support() || !this.analyser)
         return;
@@ -142,15 +143,13 @@ SoundEffect.prototype.getTimeDomainData = function (array) {
     for (var i = 0; i < array.length; i++) {
         var v = this.analyserData[this.analyserDataPos];
         v -= 128;
+        v *= 4;
         v = v < 0 ? 0 : v;
-        v = v >= 16 ? 15 : v;
+        v = v > 32 ? 32 : v;
         array[i] = v;
-        this.analyserDataPos += 2048/array.length;
-        this.analyserDataPos %= 2048;
-        //if (this.analyserDataPos == 2048) {
-         //   this.analyser.getByteTimeDomainData(this.analyserData);  
-          //  this.analyserDataPos = 0;
-        //}
+        this.analyserDataPos++;//= analyserDataSize / array.length;
+        this.analyserDataPos %= analyserDataSize;
     }
-    this.analyser.getByteTimeDomainData(this.analyserData);  
+    this.analyser.getByteTimeDomainData(this.analyserData);
+    //console.log(this.analyserData);
 }
