@@ -17,12 +17,19 @@ $(document).ready(function(){
     $(".deleteUser").click(deleteUser);
 
     $("#chatSend").click(function(){
-        addMessage(1, myInfo.bareJid, $("#chatInput").val());
-        sendTextMessage(myInfo.rosters[0], $("#chatInput").val());
-        $("#chatInput").val("");
+        sendMessage();
+    });
+
+    $("#chatInput").keypress(function(event){
+        if (event.keyCode == 13) { // enter pressed
+            sendMessage();
+        }
     });
 
     $(".startVideo").click(function(){
+        startVideo();
+    });
+    $("#startAllVideo").click(function(){
         startVideo();
     });
 });
@@ -30,6 +37,9 @@ $(document).ready(function(){
 function startVideo() {
     $("#videoLoading").hide();
     $("#videoContent").show();
+    // FIXME: check null
+    //if (myInfo.rosters.length > 0)
+        startVideoChat(myInfo.rosters[0]);
 }
 
 function deleteUser() {
@@ -59,7 +69,9 @@ function addMessage(clientId, clientName, content) {
         return;
     }
     var msg = '<div class="chatMsg"><div class="chatMsgName ';
-    if (clientId % 2 == 1) {
+    if (clientId == -1) {
+        msg += 'systemColor';
+    } else if (clientId % 2 == 1) {
         msg += 'clientColor1';
     } else {
         msg += 'clientColor2';
@@ -68,4 +80,10 @@ function addMessage(clientId, clientName, content) {
     var timeStr = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
     msg += '">' + clientName + '</div><div class="chatMsgTime">' + timeStr + '</div><div class="chatMsgText">' + content + '</div></div>';
     $("#chatPanel").append(msg);
+}
+
+function sendMessage() {
+    addMessage(1, myInfo.bareJid, $("#chatInput").val());
+    sendTextMessage(myInfo.rosters[0], $("#chatInput").val());
+    $("#chatInput").val("");
 }

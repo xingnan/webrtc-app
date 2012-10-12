@@ -1,46 +1,51 @@
 $(document).ready(function(){
+	$(window).resize(function(){
+		resize();
+	});
+
 	var canvas = $("#waveCanvas").get(0);
 	if (canvas) {
 		ctx = canvas.getContext("2d");
-
-		$("#waveCanvas").attr("width", $("#waveMain").width());
-		$("#waveCanvas").attr("height", 110);
-
-		barCnt = 32;
-		pieceCnt = 16;
-		pieceMaxDelta = 8; // max delta value of piece in each bar each frame
-		topMaxDelta = 1; // max delta value of pixel top piece can change
-		totalWidth = $("#waveCanvas").width();
-		totalHeight =$("#waveCanvas").height();
-		barWidth = totalWidth / 32 * 0.75;
-		pieceHeight = totalHeight / (pieceCnt + 1) * 0.75;
+		barCnt = 128;
+		pieceCnt = 32;
+		topMaxDelta = 3; // max delta value of pixel top piece can change
 		topHeight = 2;
-		barGap = barWidth / 3;
-		pieceGap = pieceHeight / 3;
+		
+		resize();
 
 		waveBuf = [];
 		topBuf = [];
 		frameCnt = 0;
 
-		setInterval(drawWave, 20);
+		setInterval(drawWave, 40);
 	} else {
 		alert("Canvas not enabled!");
 	}
 });
+
+function resize() {
+	$("#waveCanvas").attr("width", $("#waveMain").width());
+	$("#waveCanvas").attr("height", 110);
+
+	totalWidth = $("#waveCanvas").width();
+	totalHeight =$("#waveCanvas").height();
+	barWidth = totalWidth / barCnt * 0.75;
+	pieceHeight = totalHeight / (pieceCnt + 1) * 0.75;
+	barGap = barWidth / 3;
+	pieceGap = pieceHeight / 3;
+}
 
 function drawWave() {
 	++frameCnt;
 	if (frameCnt % 8 == 0) { 
 		var buf = new Array(barCnt);
                 soundEffect.getTimeDomainData(buf);
-                //console.log(buf);
 		waveBuf = buf;
 	}
 
 	// update top piece
 	for (var i = 0; i < barCnt; ++i) {
 		var pos = totalHeight - (pieceGap + pieceHeight) * Math.floor(waveBuf[i]) - pieceGap / 2;
-		//if (pos < topBuf[i]) {
 		if (topBuf[i] + topMaxDelta < pos) {
 			topBuf[i] += topMaxDelta;
 		} else {

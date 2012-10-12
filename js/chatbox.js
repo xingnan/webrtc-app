@@ -184,6 +184,7 @@ var Gab = {
         var full_jid = $(message).attr('from');
         var jid = Strophe.getBareJidFromJid(full_jid);
         var jid_id = Gab.jid_to_id(jid);
+console.log(full_jid + ", " + jid + ", " + jid_id);
         
         var forwardingMsg = $(message).find('video-forwarding');
         //if there isn't chat tab in the chat aera, create one
@@ -530,13 +531,13 @@ function initPage() {
 	        gVideoChatState = VideoState.VIDEO_STATE_CONNECTED;
 		}
                        //$('#localView').play();
-        $('#video-invitation').addClass("hidden");
+        //$('#video-invitation').addClass("hidden");
     });
     
     $('#video-cancel').click(function() {
     	var videoDeny = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-deny"});
         Gab.connection.send(videoDeny);
-        $('#video-invitation').addClass("hidden");
+        //$('#video-invitation').addClass("hidden");
     });
 	
 	  $('#forwarding-ok').click(function() {
@@ -899,10 +900,11 @@ console.log(message);
     	switch(gVideoChatState) {
     	case VideoState.VIDEO_STATE_READY:
     	case VideoState.VIDEO_STATE_STOPPED:
-    		trace("received an video invitation from "+full_jid);
+            trace("received a video invitation from "+full_jid);
             videoInvitor = full_jid;
             gInvited = true;
             showVideoInit();
+		console.log("init");
             break;
     	case VideoState.VIDEO_STATE_CONNECTED:
     	case VideoState.VIDEO_STATE_CONNECTING:
@@ -989,7 +991,14 @@ function agreeVideo() {
 }
 
 function showVideoInit() {
-        agreeVideo();
+	console.log("show init");
+	addMessage(-1, 'System', 'You\'ve received a video chat request. <span class="videoMsg acceptVideoBtn">Accept</span> or <span class="videoMsg denyVideoBtn">Deny</span> it?');
+	$(".acceptVideoBtn").click(function(){
+		agreeVideo();
+		$(".videoMsg").removeClass("acceptVideoBtn")
+			.removeClass("denyVideoBtn")
+			.addClass("disabledVideoBtn");
+	});
 	//$('#video-from').text(Strophe.getBareJidFromJid(videoInvitor));
 	//$('#video-invitation').removeClass("hidden");
 }

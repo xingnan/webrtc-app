@@ -7,7 +7,7 @@
 	width: 100%;
 	height: 100%;
 	min-height: 500px;
-	min-width: 800px;
+	min-width: 600px;
 
 	position: absolute;
 	left: 0px;
@@ -118,8 +118,10 @@
 #videoPanel {
 	height: 100%;
 	margin-right: 250px;
+	margin-left: 10px;
 
 	background-color: #ECE2BC;
+    	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
 }
 
 #videoLoading {
@@ -128,27 +130,39 @@
     padding: 200px;
 }
 
+#startAllVideo {
+    font-family: courier, serif;
+    cursor: pointer;
+    background-color: #6F855C;
+    color: #CBE3B5;
+    width: 150px;
+    margin: 30px auto;
+    padding: 15px;
+    text-align: center;
+    box-shadow: inset 0px 0px 8px 3px #43701B;
+    border-radius: 10px;
+}
+
 #videoContent {
     display: none;
 }
 
 #video-s {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     position: absolute;
-    left: 250px;
+    left: 260px;
     top: 0px;
     margin: 20px;
     box-shadow: 1px 1px 5px 5px #666666;
 }
 
-#videoShadow {
+#video-f {
     position: absolute;
     left: 260px;
     top: 0px;
     right: 250px;
     bottom: 150px;
-	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
 }
 
 #textPanel {
@@ -190,6 +204,28 @@
 
 .clientColor2 {
     color: #43701B;
+}
+
+.systemColor {
+    color: #666;
+}
+
+.videoMsg {
+    width: 50px;
+    padding: 10px;
+    color: #ddd;
+}
+
+.acceptVideoBtn {
+    color: #43701B;
+}
+
+.denyVideoBtn {
+    color: #7B1E22;
+}
+
+.disabledVideoBtn {
+    color: #ccc;
 }
 
 #inputPanel {
@@ -235,6 +271,7 @@
 #wavePanel {
 	height: 120px;
 	padding-top: 30px;
+	margin-left: 10px;
 }
 
 #waveMain {
