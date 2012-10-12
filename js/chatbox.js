@@ -36,7 +36,7 @@ function getCookie(c_name) {
 function MyInfo(jid) {
 	this.fullJid = jid;
 	this.bareJid = Strophe.getBareJidFromJid(jid);
-	this.name = this.bareJid;
+	this.name = Strophe.getNodeFromJid(this.bareJid);
 	this.rosters = new Array();
 }
 
@@ -188,7 +188,7 @@ var Gab = {
         var forwardingMsg = $(message).find('video-forwarding');
         //if there isn't chat tab in the chat aera, create one
         // FIXME: binding text Chat
-        if (($('#chat-tab-' + jid_id).length === 0) && (forwardingMsg.length<=0)) {
+        if (forwardingMsg.length<=0) {
             startTextChat(jid, Strophe.getNodeFromJid(jid));
         }
         
@@ -232,12 +232,10 @@ var Gab = {
             body = span;
         }
         if (body) {
-            $('#chat-page-'+jid_id).append(getChatHTML(jid, body, false));
-            Gab.scroll_chat(jid_id);
+             addMessage(0, jid, body);
         }
         if(jid!=gCurrChatJid) {
         	trace("add class new-msg");
-        	$('#chat-tab-'+jid_id).addClass("new-msg");
         }
         return true;
     },
@@ -330,7 +328,7 @@ function initPage() {
         startTextChat(jid, name);
     });
 
-    $('#myPeer').live('click', function () {
+    $('#startVideo').live('click', function () {
         // FIXME: Handle the situation of 1+ rosters.
         startVideoChat(myInfo.rosters[0]);
     });
@@ -402,12 +400,6 @@ function initPage() {
     	startTextChat(jid, name);
     });
     
-    //text chat item on the right click menu
-    //$('#text-chat').click(function () {
-   // 	var jid = $(this).parent().data('jid');
-    //	startTextChat(jid);
-    //});
-  //   
     $('.control_button').live('mousedown', function() {
     	$(this).addClass('mouse-down');
     });
@@ -645,11 +637,6 @@ function sendTextMessage(jid, body) {
     }
     var message = $msg({to: jid, "type": "chat"}).c('body').t(body).up().c('active', {xmlns: "http://jabber.org/protocol/chatstates"});
     Gab.connection.send(message);
-    //将聊天文字put到自己的聊天窗口
-    var chatHTML = getChatHTML(jid, body, true);
-    $('#chat-page-'+Gab.jid_to_id(jid)).append(chatHTML);
-    $('#inputbox').val('');
-    Gab.scroll_chat(Gab.jid_to_id(jid));
 }
 
 //显示右键菜单可见
@@ -766,27 +753,6 @@ function startTextChat(jid, name) {
 //	trace("start chat with "+jid+", name: "+name);
     var jid_id = Gab.jid_to_id(jid);
     
-    if($('#chat-tab-'+jid_id).length===0) {
-    	var newTab = getNewTab(jid_id, name);
-        $('#top-bar').removeClass("hidden");
-       // $('.top-bar').css("background-color","#474747");
-    	$('#chat-tabs').append(newTab);
-    	var newChatPage = getNewChatPage(jid_id);
-    	$('#chat-pages').append(newChatPage);
-    	$('#chat-tab-'+jid_id).data("jid", jid);
-        $('#chat-page-'+jid_id).data("jid", jid);
-        
-//        $('#chat-page-'+jid_id).lionbars();
-//        $('#chat-pages').lionbars();
-    }
-    //设置当前tab
-    if(gCurrChatJid!=null&&gCurrChatJid!=jid) {
-    	$('#chat-tab-'+Gab.jid_to_id(gCurrChatJid)).removeClass("on-icon").addClass("off-icon");
-    	$('#chat-page-'+Gab.jid_to_id(gCurrChatJid)).removeClass("show").addClass("hidden");
-    } 
-    //Set current chat tab and chat page
-    $('#chat-tab-'+jid_id).removeClass("off-icon").removeClass("new-msg").addClass("on-icon");
-    $('#chat-page-'+jid_id).removeClass("hidden").addClass("show");
     gCurrChatJid = jid;
 }
 

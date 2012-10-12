@@ -17,7 +17,8 @@ $(document).ready(function(){
     $(".deleteUser").click(deleteUser);
 
     $("#chatSend").click(function(){
-        addMessage(1, "Client 1", $("#chatInput").val());
+        addMessage(1, myInfo.bareJid, $("#chatInput").val());
+        sendTextMessage(myInfo.rosters[0], $("#chatInput").val());
         $("#chatInput").val("");
     });
 
