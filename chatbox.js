@@ -70,73 +70,6 @@ var Gab = {
                 showJid = myInfo.fullJid;
                 jid_id = myInfo.fullJid.replace("@", "-").replace("/", "-");
             }
-           
-            if (showStatus == "online"){
-             
-
-                var contact = $('<div class="contact" id="'+jid_id+'">'+
-                                    '<div class="usericon1">'+
-									    '<li>'+
-                                        '<img id="userimg" src="images/online.png" width="15" height="15" alt="icon">'+'</li>'+
-										'<li>'+'<img src="images/headsmall.png" width="25" height="25" alt="icon">'+'</li>'+
-                                    '</div>'+
-                                    '<div class="contactinfo '+showStatus+'">'+
-                                        '<div class="contactname">'+
-                                            name+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contacttextchat">'+
-                                            '<img id="textimg" src="images/textchat.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "textchat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contactnameforward">'+
-                                            '<img id="forwardimg" src="images/forward.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "forward" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="video-chat">'+
-                                            '<img id="video-chatimg" src="images/video.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "video-chat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contactshare contactjid">'+
-                                            showJid+
-                                        '</div>'+
-				    '</div>'+
-                                '</div>');
-            } else {
-                var contact = $('<div class="contact" id="'+jid_id+'">'+
-                                    '<div class="usericon1">'+
-                                        '<li>'+
-                                        '<img id="userimg" src="images/offline.png" width="15" height="15" alt="icon">'+'</li>'+
-										'<li>'+'<img src="images/headsmall.png" width="25" height="25" alt="icon">'+'</li>'+
-                                    '</div>'+
-                                    '<div class="contactinfo '+showStatus+'">'+
-                                        '<div class="contactname">'+
-                                            name+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contacttextchat">'+
-                                            '<img id="textimg" src="images/textchat.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "textchat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="contactnameforward">'+
-                                            '<img id="forwardimg" src="images/forward.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "forward" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contacticon" id="video-chat">'+
-                                            '<img id="video-chatimg" src="images/video.png" width="25" height="25" alt="icon">'+
-					'<div class="content">'+ "videochat" +
-                                         ' </div>'+
-                                        '</div>'+
-                                        '<div class="contactshare contactjid">'+
-                                            showJid+
-                                        '</div>'+
-				    '</div>'+
-                                '</div>');
-            }
- 
             Gab.insert_contact(contact);
         });
 
@@ -152,38 +85,6 @@ var Gab = {
         var ptype = $(presence).attr('type');
         var from = $(presence).attr('from');
         var jid_id = Gab.jid_to_id(from);
-		//following codes for mixserver forwarding
-		/*
-         if (ptype == undefined && from.substring(0, from.indexOf("@")) == myInfo.name && from != myInfo.fullJid) {
-            jid_id = from.replace("@", "-").replace("/", "-");
-            var showJid = from.split("/");
-        //    var name= from.substring(0,from.indexOf("@"));
-            var contact = $('<div class="contact" id="'+jid_id+'">'+
-                                '<div class="usericon1">'+
-                                    '<li>'+
-                                        '<img id="userimg" src="images/offline.png" width="15" height="15" alt="icon">'+'</li>'+
-										'<li>'+'<img src="images/headsmall.png" width="25" height="25" alt="icon">'+'</li>'+
-                                '</div>'+
-                                '<div class="contactinfo online">'+
-                                    '<div class="contactname">'+
-                                       name+
-                                   '</div>'+
-                                      '<div class="contacttextchat" id="contacttestchat">'+
-                                        '<img id="textimg" src="images/textchat.png" width="25" height="25" alt="icon">'+
-                                      '</div>'+
-                                      '<div class="contactnameforward" id="forward">'+
-                                       '<img id="forwardimg" src="images/forward.png" width="25" height="25" alt="icon">'+
-                                      '</div>'+
-                                    '<div class="contactshare contactjid">'+
-                                        showJid[1]+
-                                    '</div>'+
-				'</div>'+
-                            '</div>');
-      
-            Gab.insert_contact(contact);
-        }
-//
-*/
         if (ptype === 'unavailable' && from.substring(0, from.indexOf("@")) == myInfo.name) {
             jid_id = from.replace("@", "-").replace("/", "-");
             $('#' + jid_id).remove();
@@ -195,15 +96,8 @@ var Gab = {
             // populate pending_subscriber, the approve-jid span, and
             // open the dialog
             Gab.pending_subscriber = from;
-            $('#approve-jid').text(Strophe.getBareJidFromJid(from));
-            $('#approve_dialog').dialog('open');
+            console.log("FIXME: Strophe.getBareJidFromJid(from)" + Strophe.getBareJidFromJid(from));
         } else if (ptype !== 'error') {
-            var userinfo = $('#contactlist div#' + jid_id + ' .contactinfo')
-                .removeClass("online")
-                .removeClass("away")
-                .removeClass("offline");
-            var usericon = $('#contactlist div#' + jid_id + ' div.usericon1 #userimg');
-            var usertexticon = $('#contactlist div#' + jid_id + ' div.contactinfo div' + '.contacttextchat #textimg' );
             if (ptype === 'unavailable') {
                 // TODO:(yujie.mao@intel.com) We need to remove offline devices.
             	//userinfo.addClass("offline");
@@ -234,37 +128,6 @@ var Gab = {
 
     //when rosters have been added or removed, or changed names
     on_roster_changed: function (iq) {
-        $(iq).find('item').each(function () {
-            var sub = $(this).attr('subscription');
-            var jid = $(this).attr('jid');
-            var name = $(this).attr('name') || jid;
-            var jid_id = Gab.jid_to_id(jid);
-
-            if (sub === 'remove') {
-                // contact is being removed
-            	trace("remove succeed");
-                $('#' + jid_id).remove();
-            } else {
-                // contact is being added or modified
-                var contact_html = "<li id='" + jid_id + "'>" +
-                    "<div class='" + 
-                    ($('#' + jid_id).attr('class') || "roster-contact offline") +
-                    "'>" +
-                    "<div class='roster-name'>" +
-                    name +
-                    "</div><div class='roster-jid'>" +
-                    jid +
-                    "</div></div></li>";
-
-                if ($('#' + jid_id).length > 0) {
-                    $('#' + jid_id).replaceWith(contact_html);
-                } else {
-                    Gab.insert_contact(contact_html);
-                }
-            }
-        });
-
-        return true;
     },
 
     //handle message stanzas
@@ -323,7 +186,6 @@ var Gab = {
         }
         if(jid!=gCurrChatJid) {
         	trace("add class new-msg");
-        	$('#chat-tab-'+jid_id).addClass("new-msg");
         }
         return true;
     },
@@ -388,8 +250,6 @@ var Gab = {
     	if(name!=null) {
     		myInfo.name = name;
     	}
-    	$('#myname').text(myInfo.name);
-    	$('#mystatus').text(UserStatus.AVAILABLE);
     },
     
     scroll_chat: function (jid_id) {
@@ -400,7 +260,6 @@ var Gab = {
 };
 
 function initPage() {
-
     $(document).trigger('connect', {
         jid: getCookie("jid"),
         password: getCookie("password")
@@ -408,15 +267,6 @@ function initPage() {
 	
     $(document).click(function() {
         hideRightMenu();
-    });
-
-   // text chat  yanbin
-    $('#contacttextchat').live('click', function () {
-        var jid = $(this).parent().find(".contactjid").text();
-        var name = $(this).parent().find(".contactname").text();
-           var a = $(this).prev().text();
-        var b = $(this).next().next().text();
-        startTextChat(jid, name);
     });
 
     $('#video-chat').live('click', function () {
@@ -438,107 +288,11 @@ function initPage() {
         //var name = $(this).parent().find(".contactname").text();
         startForwarding(jid);
     });
-      $('.contacticon').live('hover',function(){
-         $(this).children("div").fadeToggle('fast');
-     });
-      $('.toolico-fat').live('hover',function(){
-         $(this).children("div").fadeToggle('fast');
-     });
-    //press "Enter" on the input text to send a message
-    $('#inputbox').live('keypress', function (ev) {
-        var jid = $(this).parent().data('jid');
-        if (ev.which === 13) {
-            ev.preventDefault();
-            var body = $(this).val();
-            sendTextMessage(gCurrChatJid, body);
-        } else {
-            var composing = $(this).parent().data('composing');
-            if (!composing) {
-                var notify = $msg({to: jid, "type": "chat"}).c('composing', {xmlns: "http://jabber.org/protocol/chatstates"});
-                Gab.connection.send(notify);
-
-                $(this).parent().data('composing', true);
-            }
-        }
-    });
-    
-    //send text chat msg to current peer.
-    $('#sendbtn').click(function() {
-        var body = $('#inputbox').val();
-        sendTextMessage(gCurrChatJid, body);
-    });
-    
-    $('#sendbtn').bind("mousedown", function () {
-    	$(this).addClass("btnmousedown");
-    });
-    $('#sendbtn').bind("mouseup", function () {
-    	$(this).removeClass("btnmousedown");
-    });
-    $('#sendbtn').bind("mouseout", function () {
-    	$(this).removeClass("btnmousedown");
-    });
 
     $('#disconnect').click(function () {
         Gab.connection.disconnect();
         Gab.connection = null;
     });
-    // forward click function 
-  //   $('#forward').click(function(){
-   //     sendTextMessage(gCurrChatJid,body);     
-
-     //}); 
-    //right click event
-    $('.chat-tab').live("click", function(e) {
-    	var jid = $(this).data("jid");
-    	var name = $(this).find("div").text();
-    	startTextChat(jid, name);
-    });
-    
-    //text chat item on the right click menu
-    //$('#text-chat').click(function () {
-   // 	var jid = $(this).parent().data('jid');
-    //	startTextChat(jid);
-    //});
-  //   
-    $('.control_button').live('mousedown', function() {
-    	$(this).addClass('mouse-down');
-    });
-    $('.control_button').live('mouseup', function() {
-    	$(this).removeClass('mouse-down');
-    });
-    //hidden left contact list
-    $('#title').live('mousedown', function () {
-      $("#contact-area").removeClass("hidden");
-	  $("#right").addClass("hidden");
-    //  $("#title img").attr('src','images/more.png');
-     // $("#title").attr('id','hidden_button_back');
-      
-    }); 
-	
-	$('#hidden_button_back').live('mousedown', function() {
-    //   $("#contact-area").removeClass("hidden");	
-	  //    $("#right").addClass("hidden");
-      //$("#hidden_button_back img").attr('src','images/hiddenleft.png');
-      //$("#hidden_button_back").attr('id',"title");
-    });
-	//hidden right list
-	$('#hiddenbutton').live('mousedown', function () {
-//      $("#contact_area").addClass("hidden");
-//	  $("#right").removeClass("hidden");
-   //   $("#hidden img").attr('src','images/left_back.png');
-    //  $("#hidden").attr('id','left_back');
-      
-    }); 
-	$('#left_back').live('mousedown', function() {
-      // $("#right").removeClass("hidden");	
-	    //  $("#right").addClass("hidden");
-      //$("#hidden_button_back img").attr('src','images/hiddenleft.png');
-      //$("#hidden_button_back").attr('id',"title");
-    });
-    //video chat item on the right click menu
-   // $('#video-chat').click(function () {
-   // 	startVideoChat(gCurrChatJid);
-   // });
     
     $('#endVideoChat').click(function () {
                  // local_stream.stop(); here is bug 
@@ -548,15 +302,8 @@ function initPage() {
                   local_stream.stop();
             var closeMsg = $msg({to: gCurrVideoJid, "type": "chat"}).c('video-chat', {type: "video-close"});
             Gab.connection.send(closeMsg);
-            moveChatArea("right");
     		gCurrVideoJid = null;
     		gInvited = false;
-                // stopMultipleConnection();
-        $('#text_logo').removeClass("hidden"); 
-        $('#intel_logo').removeClass("hidden"); 
-        $('#biglogo').removeClass("hidden"); 
-          $('#videobox-f').addClass("hidden");
-		$('#remoteView').addClass("hidden");
     		gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
     	}
     });
@@ -594,12 +341,6 @@ function initPage() {
     	$('#chat-page-'+Gab.jid_to_id(jid)).remove();
     });
     
-    //right click event
-    $('.contact').live("contextmenu", function(e) {
-		var jid = $(this).find(".contactinfo .contactjid").text();
-		showRightMenu(e, jid);
-    });
-    
     //remove item on the right click menu
     $('#remove-contact').click(function () {
     	trace("start removing");
@@ -608,14 +349,6 @@ function initPage() {
     });
     
     $('#video-ok').click(function() {
-           $('#text_logo').addClass("hidden");
-        $('#intel_logo').addClass("hidden");
-        $('#biglogo').addClass("hidden");
-          $('#videobox-f').removeClass("hidden");
-          $('#remoteView').removeClass("hidden");
-           $('#R5').css("background-image","url(./images/white.png");
-           $('#R5').css("background-color","transparent");
-
         if(local_stream==null) {
         	trace("trying to get user media");
 			navigator.webkitGetUserMedia({audio: true, video: true}, gotStream, gotStreamFailed);
@@ -630,20 +363,16 @@ function initPage() {
 			if(local_stream.tracks[0]) {
 				local_stream.tracks[0].enabled = true;
 			}
-		 //   moveChatArea("left");
 	    	var videoAgree = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-agree"});
 	        Gab.connection.send(videoAgree);
 	        gCurrVideoJid = videoInvitor;
 	        gVideoChatState = VideoState.VIDEO_STATE_CONNECTED;
 		}
-                       //$('#localView').play();
-        $('#video-invitation').addClass("hidden");
     });
     
     $('#video-cancel').click(function() {
     	var videoDeny = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-deny"});
         Gab.connection.send(videoDeny);
-        $('#video-invitation').addClass("hidden");
     });
 	
 	  $('#forwarding-ok').click(function() {
@@ -651,9 +380,6 @@ function initPage() {
 	    	var videoAgree = $msg({to: forwardInvitor, "type": "chat"}).c('video-forwarding').c('type', {}, "video-forwarding-accept");
 	        Gab.connection.send(videoAgree);
 			startVideoChat();
-                 
-		
-        $('#forwarding-invitation').addClass("hidden");
     });
     
     $('#forwarding-cancel').click(function() {
@@ -672,65 +398,6 @@ function initPage() {
     	}
  //       window.location.href=getCookie("serverCodeAddr") + "/login.html";
     });
-    
-    $('#videoFullScreen').click(function() {
-    	setVideoFullScreen(true);
-    });
-    $('#endfullscreen').click(function() {
-    	setVideoFullScreen(false);
-    });
-    
-    $('#search-img').click(function() {
-    	var name = trim($('#searchbox').val());
-    	if(name==""||name==null) {
-    		notify("Please enter something to search.");
-    		return;
-    	}
-    	var searchStr = getSearchString(name);
-    	var xml = text_to_xml(searchStr);
-        if (xml) {
-            Gab.connection.send(xml);
-        } else {
-            notify("error");
-        }
-    });
-}
-
-function toFull(){ 
-	// Create a new jQuery.Event object with specified event properties.
-//	var e = jQuery.Event();
-	// trigger an artificial keydown event with keyCode 64
-	$(document).trigger("keydown", { keyCode: 122 });
-}
-
-function setVideoFullScreen(fullscreen) {
-	if(fullscreen) {
-		if(gVideoChatState=VideoState.VIDEO_STATE_CONNECTED) {
-			//$('#endfullscreen').css({position:"absolute",'z-index':14, 'top':0, 'left':$(window).width()-$('#endfullscreen').width()});
-			$('#endfullscreen').css({position:"absolute",'z-index':14, 'top':0, 'left':800-$('#endfullscreen').width()});
-			$('#endfullscreen').removeClass("hidden");
-		//	$('#mask').removeClass("hidden");
-        		$('#R5').css({position:"absolute", 'width':"800px",'height':"600px",'top':0,'left':0, 'margin-top':0, 'margin-left':0});
-			$('#videobox-f').css({position:"relactive",'width':"800px",'height':"600px", 'top':0, 'left':0, 'margin-top':0, 'margin-left':0});
-			$('#remoteView').css({position:"relactive", 'top':0, 'left':0, 'width':"800px", 'height':"600px"});
-			//$('.videobox-u').css({position:"absolute", 'z-index':15, 
-//			$('.video-f').css({position:"relactive",
-//				'top':$(window).height()-$('.videobox-f').height(), 
-		//		'left':$(window).width()-$('.videobox-f').width(), 'margin-top':0});
-		//	$('.controllbar-f').addClass("hidden");
-                  $('#send').addClass("hidden");      
-		}
-	} else {
-		$('#endfullscreen').addClass("hidden");
-		$('#endfullscreen').removeAttr("style");
-	//	$('#mask').addClass("hidden");
-		$('#R5').removeAttr("style");
-		$('#remoteView').removeAttr("style");
-		$('.videobox-f').removeAttr("style");
-//		$('.video-f').removeAttr("style");
-                $('#send').removeClass("hidden");
-	}
-
 }
 
 function sendTextMessage(jid, body) {
@@ -745,28 +412,9 @@ function sendTextMessage(jid, body) {
     var message = $msg({to: jid, "type": "chat"}).c('body').t(body).up().c('active', {xmlns: "http://jabber.org/protocol/chatstates"});
     Gab.connection.send(message);
     //将聊天文字put到自己的聊天窗口
-    var chatHTML = getChatHTML(jid, body, true);
-    $('#chat-page-'+Gab.jid_to_id(jid)).append(chatHTML);
     $('#inputbox').val('');
     Gab.scroll_chat(Gab.jid_to_id(jid));
 }
-
-//显示右键菜单可见
-function showRightMenu(e, jid) {
-	var menuleft = e.clientX;
-    var menutop = e.clientY;
-	$('#right-menu').css({position:"absolute", 'top':menutop, 'left':menuleft});
-    $('#right-menu').data('jid', jid);
-
-    $('#right-menu').removeClass("hidden");
-    event.preventDefault();
-    return false;
-};
-
-//隐藏右键菜单,设置visibility为hidden就OK！
-function hideRightMenu() {
-	$('#right-menu').addClass("hidden");
-};
 
 //remove a Contact
 function removeContact(jid) {
@@ -860,35 +508,6 @@ function bindDocumentEvent() {
 
 bindDocumentEvent();
 
-//define functions
-function startTextChat(jid, name) { 
-//	trace("start chat with "+jid+", name: "+name);
-    var jid_id = Gab.jid_to_id(jid);
-    
-    if($('#chat-tab-'+jid_id).length===0) {
-    	var newTab = getNewTab(jid_id, name);
-        $('#top-bar').removeClass("hidden");
-       // $('.top-bar').css("background-color","#474747");
-    	$('#chat-tabs').append(newTab);
-    	var newChatPage = getNewChatPage(jid_id);
-    	$('#chat-pages').append(newChatPage);
-    	$('#chat-tab-'+jid_id).data("jid", jid);
-        $('#chat-page-'+jid_id).data("jid", jid);
-        
-//        $('#chat-page-'+jid_id).lionbars();
-//        $('#chat-pages').lionbars();
-    }
-    //设置当前tab
-    if(gCurrChatJid!=null&&gCurrChatJid!=jid) {
-    	$('#chat-tab-'+Gab.jid_to_id(gCurrChatJid)).removeClass("on-icon").addClass("off-icon");
-    	$('#chat-page-'+Gab.jid_to_id(gCurrChatJid)).removeClass("show").addClass("hidden");
-    } 
-    //Set current chat tab and chat page
-    $('#chat-tab-'+jid_id).removeClass("off-icon").removeClass("new-msg").addClass("on-icon");
-    $('#chat-page-'+jid_id).removeClass("hidden").addClass("show");
-    gCurrChatJid = jid;
-}
-
 function startForwarding(jid){
               if(jid==null){                 
 		notify("Please select a contact first.");
@@ -920,7 +539,6 @@ function handleForwardingMsg(message) {
     	//	trace("received an forwarding invitation from "+full_jid);
             forwardInvitor = full_jid;
             gInvited = true;
-            showForwardInit();
 	//		startVideoCall();
     	//	notify("You've received a forward invitation from "+jid+", you can stop current connection to accept it.");
         return true;
@@ -934,11 +552,6 @@ function handleForwardingMsg(message) {
 		//need to check
 		stopMultipleConnection();
 		//startVideoCall();
-        $('#text_logo').removeClass("hidden"); 
-        $('#biglogo').removeClass("hidden"); 
-        $('#intel_logo').removeClass("hidden"); 
-          $('#videobox-f').addClass("hidden");
-		$('#remoteView').addClass("hidden");
     		gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
 		
 		return true;
@@ -954,10 +567,6 @@ function handleForwardingMsg(message) {
     return true;
 }
 
-function showForwardInit() {
-	$('#forwarding-from').text(Strophe.getBareJidFromJid(forwardInvitor));
-	$('#forwarding-invitation').removeClass("hidden");
-}
 //Send a video chat invitation to jid
 function startVideoChat(gCurrChatJid) {
 	if(gCurrChatJid==null) {
@@ -994,26 +603,11 @@ function startVideoChat(gCurrChatJid) {
 		if(local_stream.tracks[0]) {
 			local_stream.tracks[0].enabled = true;
 		}
-/*	    var url = webkitURL.createObjectURL(local_stream);
-	    document.getElementById("localView").src = url;*/
-	//    moveChatArea("left");
-	  
 		gVideoChatState = VideoState.VIDEO_STATE_CONNECTING;
 		trace("sending an video chat invitation to "+jid);
 	    var videoInvt = $msg({to: jid, "type": "chat"}).c('video-chat', {type: "video-invitation"});
 	    Gab.connection.send(videoInvt);
 	}
-       $('#text_logo').addClass("hidden");
-        $('#intel_logo').addClass("hidden");
-        $('#biglogo').addClass("hidden");
-          $('#videobox-f').removeClass("hidden");
-          $('#remoteView').removeClass("hidden");
-           $('#R5').css("background-image","url(./images/white.png");
-           $('#R5').css("background-color","transparent");
-
-        // createMultipleConnection();
-
-	//	gVideoChatState = VideoState.VIDEO_STATE_CONNECTED;
 }
 
 //has got a video sig msg from peer, handle it.
@@ -1035,7 +629,6 @@ console.log(message);
     		trace("received an video invitation from "+full_jid);
             videoInvitor = full_jid;
             gInvited = true;
-            showVideoInit();
             break;
     	case VideoState.VIDEO_STATE_CONNECTED:
     	case VideoState.VIDEO_STATE_CONNECTING:
@@ -1066,7 +659,6 @@ console.log(message);
     			local_stream.tracks[0].enabled = false;
     		}
         }
-        moveChatArea("right");
         return true;
     }
     //signaling msg video chat
@@ -1081,13 +673,11 @@ console.log(message);
     if(msgType=='video-close') {
     	if(gVideoChatState==VideoState.VIDEO_STATE_CONNECTED) {
     		gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
-    		setVideoFullScreen(false);
         	gInvited = false;
     		notify(full_jid+" has closed video chat.");
     		var userPeer = getUserPeer(jid);
     		if(userPeer!=null) {
     			userPeer.closeVideo();
-    			moveChatArea("right");
     		}
     	}
     	return true;
@@ -1102,66 +692,6 @@ console.log(message);
     return true;
 }
 
-function showVideoInit() {
-	$('#video-from').text(Strophe.getBareJidFromJid(videoInvitor));
-	$('#video-invitation').removeClass("hidden");
-}
-
-//return a new chat tab content
-function getNewTab(jid_id, name) {
-	var newChatTab = '<div class="on-icon chat-tab" id="chat-tab-'+jid_id+'" style="background-image:url(images/headsmall.png)">'+
-	//var newChatTab = '<div class="on-icon chat-tab" id="chat-tab-'+jid_id+'>' +name+
-			       '<div class="chat-tab-name" id="chat-tab-name">'+name+
-				     '<img class="close-img" src="images/close.png" alt="close">'+
-					 '</div>'+
-				'</div>';
-    return newChatTab;
-}
-
-//return a new chat page content
-function getNewChatPage(jid_id) {
-	var newChatPage = '<div class="dail-detail" id="chat-page-'+jid_id+'"></div>';
-    return newChatPage;
-}
-
-function getChatHTML(jid_id,body, self) {
-	var chatHTML = "";
-	if(self) {
-		chatHTML = '<div class="message-u">'+
-					   	'<div class="icon-s-u">'+'<img src="images/headsmall.png" width="20" height="20">'+'me:'+'</div>'+
-					    '<div class="words-u">'+
-					    	'<p>'+body+'</p>'+
-					    '</div>'+
-					'</div>';
-	} else {
-         var name=jid_id.split("@");
-       
-    	chatHTML = '<div class="message-f">'+
-				    	'<div class="icon-s-f">'+'<img src="images/headsmall.png" width="20" height="20">'+name[0]+':'+'</div>'+
-				        	'<div class="words-f"><p>'+body+'</p>'+
-                                        '</div>'+
-				    '</div>';
-	}
-	return chatHTML;
-}
-
-//高亮度鼠标滑过的菜单条项目
-function highlightie5() {
-    if (event.srcElement.className == "menuitems") {
-        event.srcElement.style.backgroundColor = "highlight";
-        event.srcElement.style.color = "white";
-    }
-}
-
-//恢复菜单条项目的正常显示
-function lowlightie5() {
-    if (event.srcElement.className == "menuitems") {
-        event.srcElement.style.backgroundColor = "";
-        event.srcElement.style.color = "black";
-        window.status = "";
-    }
-}
-
 function checkState(jid) {
 	for(var i=0; i<remotePeers.length; i++) {
 		if(remotePeers[i].jid==Strophe.getBareJidFromJid(jid)) {
@@ -1169,22 +699,6 @@ function checkState(jid) {
 		}
 	}
 	return "NONE";
-}
-
-var gMarginLeft = 300;
-function moveChatArea(direction) {
-	if(direction=="left") {
-	//	$('#chatarea').animate({marginLeft:"0px"},{duration:1000});
-	//	$('#chatarea').animate({width:"50%",marginLeft:"300px"},{duration:1000});
-		$('#videobox-f').removeClass("hidden");
-		$('#remoteView').removeClass("hidden");
-		trace("move left");
-	} else if(direction=="right") {
-//		$('#chatarea').animate({marginLeft:"300px"},{duration:1000});
-		$('#videobox-f').addClass("hidden");
-		$('#remoteView').addClass("hidden");
-		trace("move right");
-	}
 }
 
 function text_to_xml(text) {
@@ -1217,30 +731,6 @@ function trim(str){
     for(var j = str.length;  j>0 && str.charAt(j-1)==" "; j--);
     if(i>j)  return  "";  
     return  str.substring(i,j);  
-}
-
-function getSearchString(name) {
-	return '<iq to="search."'+domain+' type="set">' +
-			    '<query xmlns="jabber:iq:search">'+
-				    '<x xmlns="jabber:x:data" type="submit">'+
-				        '<field var="FORM_TYPE" type="hidden">'+
-				            '<value>jabber:iq:search</value>'+
-				        '</field>'+
-				        '<field var="search" type="text-single">'+
-				            '<value>'+name+'</value>'+
-				        '</field>'+
-				        '<field var="Username" type="boolean">'+
-				            '<value>1</value>'+
-				        '</field>'+
-				        '<field var="Name" type="boolean">'+
-				            '<value>1</value>'+
-				        '</field>'+
-				        '<field var="Email" type="boolean">'+
-				            '<value>0</value>'+
-				        '</field>'+
-				    '</x>'+
-				'</query>'+
-			'</iq>';
 }
 
 window.onbeforeunload = function() {
