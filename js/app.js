@@ -1,4 +1,29 @@
 $(document).ready(function(){
+	$(window).resize(function() {
+		// remote video
+		var margin = parseInt($("#video-s").css("margin"));
+		var width = $("#video-f").width();
+		if (width <= 0) {
+			return;
+		}
+		var height = $("#video-f").height();
+		if (height / width < 0.75) { // wider
+			var newWidth = height * 4 / 3;
+			$("#remoteView").width(newWidth).height(height)
+				.css("margin-left", (width - newWidth) / 2)
+				.css("margin-top", 0);
+		} else {
+			var newHeight = width * 3 / 4;
+			$("#remoteView").width(width).height(newHeight)
+				.css("margin-top", (height - newHeight) / 2)
+				.css("margin-left", 0);
+		}
+		
+		// local video
+		$("#video-s").css("left", 
+			$(window).width() - $("#textPanel").width() - 250);
+	});
+		
     $("#otherHead").click(function(){
         $("#otherUser").slideToggle();
     });
