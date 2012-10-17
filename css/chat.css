@@ -84,6 +84,7 @@
     padding: 10px 20px;
     background: -webkit-linear-gradient(top, #5e7b5b 0%,#577b57 50%,#527052 51%,#507453 100%);
     font-family: courier, serif;
+    font-size: 10px;
     color: #CBE3B5;
 }
 
@@ -176,9 +177,8 @@
 }
 
 #chatPanel {
-    padding: 20px;
+    margin: 20px;
     overflow: auto;
-    max-height: 90%;
 }
 
 .chatMsg {
@@ -189,13 +189,13 @@
     float: left;
     margin-right: 20px;
     font-family: courier, serif;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .chatMsgTime {
     color: #7D681E;
     font-family: courier, serif;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .clientColor1 {

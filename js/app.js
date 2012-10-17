@@ -15,6 +15,10 @@ $(document).ready(function(){
 
     $(".addUser").click(addUser);
     $(".deleteUser").click(deleteUser);
+    
+    $("#chatPanel").css("max-height", $(window).height() 
+		- $("#inputPanel").height() 
+		- parseInt($("#chatPanel").css("margin")) * 2);
 
     $("#chatSend").click(function(){
         sendMessage();
@@ -50,14 +54,6 @@ $(document).ready(function(){
     });
 });
 
-function startVideo() {
-    $("#videoLoading").hide();
-    $("#videoContent").show();
-    // FIXME: check null
-    //if (myInfo.rosters.length > 0)
-        startVideoChat(myInfo.rosters[0]);
-}
-
 function deleteUser() {
     $("#otherUser").append($(this).parent().parent());
     $(this).parent().hide();
@@ -81,7 +77,6 @@ function addUser() {
 
 // TODO: clientId, clientName and time should be from the server. Currently use time on client side.
 function addMessage(clientId, clientName, content) {
-console.log("add msg");
     if (content == null || content == '') {
         return;
     }
@@ -103,6 +98,23 @@ function sendMessage() {
     addMessage(1, myInfo.bareJid, $("#chatInput").val());
     sendTextMessage(myInfo.rosters[0], $("#chatInput").val());
     $("#chatInput").val("");
+    $("#chatPanel").animate({
+		scrollTop: $("#chatPanel")[0].scrollHeight}, 1000);
 }
 
+function initVideo() {
+    $("#videoContent").hide();
+    $("#videoLoading").show();
+}
 
+function startVideo() {
+    $("#videoLoading").hide();
+    $("#videoContent").show();
+    // FIXME: check null
+    //if (myInfo.rosters.length > 0)
+        startVideoChat(myInfo.rosters[0]);
+}
+
+function stopVideo() {
+	initVideo();
+}

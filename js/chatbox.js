@@ -61,6 +61,7 @@ var Gab = {
         $(iq).find('item').each(function () {
             var jid = $(this).attr('jid');
             var name = $(this).attr('name') || Strophe.getNodeFromJid(jid);
+            console.log("jid: " + jid + ", name: " + name);
             // Store rosters
             myInfo.rosters.push(jid);
             // Hack
@@ -71,12 +72,14 @@ var Gab = {
             var showJid = jid;
             var showStatus = "offline";
             if (jid == myInfo.bareJid) {
+				// FIXME: self, seems never to be called
                 showStatus = "online"
                 showJid = myInfo.fullJid;
                 jid_id = myInfo.fullJid.replace("@", "-").replace("/", "-");
             }
-           
+            console.log("showStatus", showStatus);
             if (showStatus == "online"){
+				
             } else {
             }
  
@@ -761,7 +764,7 @@ function startForwarding(jid){
 	}
 	var jid = jid;
 
-        if(gVideoChatState!=VideoState.VIDEO_STATE_CONNECTED) {
+    if(gVideoChatState!=VideoState.VIDEO_STATE_CONNECTED) {
 		alert("Please Join Video conversation at first.");
 		return;
 	}
@@ -835,7 +838,6 @@ function startVideoChat(gCurrChatJid) {
 		notify("Connecting to mixserver please wait.");
 		return;
 	} else if(gVideoChatState==VideoState.VIDEO_STATE_CONNECTED) {
-		alert("Already in conversation.");
 		return;
 	}
 	
