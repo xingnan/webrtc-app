@@ -1,0 +1,43 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background-color: #ECE2BC;
+    font-family: courier, serif;
+}
+
+#loginPanel {
+    background-color: #CBE3B5;
+    width: 400px;
+    height: 300px;
+    margin: 100px auto;
+    box-shadow: 0px 0px 10px 5px #6F855C;
+    border-radius: 10px;
+}
+
+#logoPanel {
+    margin: 0px auto;
+    padding: 30px;
+    width: 200px;
+    height: 39px;
+}
+
+#loginText {
+    margin: 0px 30px;
+    font-size: 20px;
+    color: #43701B;
+}
+
+.loginBtn {
+    cursor: pointer;
+    background-color: #6F855C;
+    color: #CBE3B5;
+    width: 150px;
+    margin: 15px auto;
+    padding: 15px;
+    text-align: center;
+    box-shadow: inset 0px 0px 8px 3px #43701B;
+    border-radius: 10px;
+}

@@ -1,0 +1,288 @@
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+#content {
+	width: 100%;
+	height: 100%;
+	min-height: 500px;
+	min-width: 600px;
+
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+#leftPanel {
+	width: 250px;
+	height: 100%;
+	float: left;
+    padding: 0px 5px;
+
+	background-color: #CBE3B5;
+	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
+}
+
+#logoPanel {
+    padding: 20px 20px 10px 20px;
+}
+
+#selfPanel {
+	height: 80px;
+    border-style: solid;
+    border-color: #6F855C;
+    border-width: 3px 0px 1px 0px;
+}
+
+.status {
+	width: 16px;
+	height: 16px;
+
+	float: left;
+	margin: 0px 10px;
+}
+
+.online {
+	background: url("../image/status.png") 16px 0px;
+}
+
+.busy {
+	background: url("../image/status.png") 0px 0px;
+}
+
+.offline {
+	background: url("../image/status.png") 0px 16px;
+}
+
+#selfPanel > img {
+	margin: 17px;
+	float: left;
+}
+
+#selfDetail {
+	padding: 20px 20px 20px 80px;
+}
+
+#personPanel {
+	padding: 10px 0px;
+    overflow: auto;
+    max-height: 200px;
+}
+
+.personDetail {
+	height: 20px;
+	padding: 5px;
+}
+
+.personName {
+    float: left;
+    margin-right: 10px;
+}   
+
+.personHead {
+    padding: 10px 20px;
+    background: -webkit-linear-gradient(top, #5e7b5b 0%,#577b57 50%,#527052 51%,#507453 100%);
+    font-family: courier, serif;
+    font-size: 10px;
+    color: #CBE3B5;
+}
+
+#otherHead {
+    cursor: pointer;
+}
+
+#otherUser {
+    max-height: 200px;
+    overflow: auto;
+    display: none;
+	padding: 10px 0px;
+}
+
+.userOper {
+    float: right;
+    margin: 0px 10px;
+    display: none;
+}
+
+#rightPanel {
+	height: 100%;
+	margin-left: 250px;
+}
+
+#rightUp {
+	width: 100%;
+	height: 100%;
+	margin-bottom: -150px;
+}
+
+#videoPanel {
+	height: 100%;
+	margin-right: 250px;
+	margin-left: 10px;
+
+	background-color: #ECE2BC;
+	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
+}
+
+#videoLoading {
+    width: 300px;
+    margin: 0 auto;
+    padding-top: 200px;
+}
+
+#startAllVideo {
+    font-family: courier, serif;
+    cursor: pointer;
+    background-color: #6F855C;
+    color: #CBE3B5;
+    width: 150px;
+    margin: 30px auto;
+    padding: 15px;
+    text-align: center;
+    box-shadow: inset 0px 0px 8px 3px #43701B;
+    border-radius: 10px;
+}
+
+#videoContent {
+    display: none;
+}
+
+#video-s {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    bottom: 150px;
+    margin: 20px;
+    box-shadow: 1px 1px 5px 5px #666666;
+}
+
+#video-f {
+    position: absolute;
+    left: 260px;
+    top: 0px;
+    right: 250px;
+    bottom: 150px;
+    padding: 20px;
+}
+
+#textPanel {
+	width: 250px;
+	height: 100%;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+
+    background-color: #EBBBBD;
+}
+
+#chatPanel {
+    margin: 20px;
+    overflow: auto;
+}
+
+.chatMsg {
+    margin-bottom: 8px;
+}
+
+.chatMsgName {
+    float: left;
+    margin-right: 20px;
+    font-family: courier, serif;
+    font-size: 15px;
+}
+
+.chatMsgTime {
+    color: #7D681E;
+    font-family: courier, serif;
+    font-size: 15px;
+}
+
+.clientColor1 {
+    color: #7B1E22;
+}
+
+.clientColor2 {
+    color: #43701B;
+}
+
+.systemColor {
+    color: #666;
+}
+
+.videoMsg {
+    width: 50px;
+    margin: 5px 5px 0px 0px;
+    color: #ddd;
+    box-shadow: inset 0px 0px 2px 2px #999;
+    border-radius: 2px;
+}
+
+.acceptVideoBtn {
+    background-color: #43701B;
+    cursor: pointer;
+}
+
+.denyVideoBtn {
+    background-color: #7B1E22;
+    cursor: pointer;
+}
+
+.disabledVideoBtn {
+    background-color: #ccc;
+    color: #333;
+}
+
+#inputPanel {
+	position: absolute;
+	bottom: 10px;
+	width: 100%;
+}
+
+#chatInput {
+	width: 160px;
+	height: 20px;
+	margin-left: 10px;
+}
+
+#chatSend {
+	width: 60px;
+	height: 25px;
+    background-color: #7B1E22;
+    color: #EBBBBD;
+}
+
+#rightBottom {
+	height: 150px;
+	margin-right: 250px;
+
+	background-color: #333;
+}
+
+#effectPanel {
+	height: 30px;
+	float: left;
+	overflow: hidden;
+}
+
+#effectMain {
+	padding: 10px;
+}
+
+.effectBtn {
+	width: 80px;
+}
+
+#wavePanel {
+	height: 120px;
+	padding-top: 30px;
+	margin-left: 10px;
+}
+
+#waveMain {
+	padding: 0px 10px;
+}
+
+.shadow {
+	box-shadow: inset 0px 0px 5px 5px rgba(250, 250, 250, 1);
+}

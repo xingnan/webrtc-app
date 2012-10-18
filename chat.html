@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/chat.css" />
+
+		<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+		<script type="text/javascript" src="js/strophe.js"></script>
+		<script type="text/javascript" src="js/chatbox.js"></script>
+		<script type="text/javascript" src="js/webaudio.js"></script>
+		<script type="text/javascript" src="js/webrtc.js"></script>
+		<script type="text/javascript" src="js/wave.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</head>
+	<body>
+		<div id="content">
+			<div id="leftPanel">
+                <div id="logoPanel">
+                    <img src="image/logobig.png" alt="logo" width="200px"/>
+                </div><!-- logoPanel -->
+
+				<div id="selfPanel">
+					<img src="image/avatar.png" alt="self_avatar" width="45px" height="45px" />
+					<div id="selfDetail">
+						<div class="status online"></div>
+						<div id="selfName">Client 1</div>
+					</div><!-- selfDetail -->
+				</div><!-- selfPanel -->
+
+				<div id="personPanel">
+					<div class="personDetail"> 
+						<div class="status online"></div>
+						<div class="personName" id="myPeer">Client 2</div>
+                        <div class="userOper">
+                            <img src="image/video.png" alt="start video" class="startVideo" /><img src="image/minus.png" alt="delete user" class="deleteUser" />
+                        </div>
+					</div><!-- personDetail -->
+				</div><!-- personPanel -->
+                <div id="otherHead" class="personHead">
+                    Other Users
+                </div>
+                <div id="otherUser">
+					<div class="personDetail"> 
+						<div class="status online"></div>
+						<div class="personName">Client 6</div>
+                        <div class="userOper">
+                            <img src="image/add.png" alt="add user" class="addUser" />
+                        </div>
+					</div><!-- personDetail -->
+					<div class="personDetail"> 
+						<div class="status busy"></div>
+						<div class="personName">Client 7</div>
+                        <div class="userOper">
+                            <img src="image/add.png" alt="add user" class="addUser" />
+                        </div>
+					</div><!-- personDetail -->
+                </div><!-- otherUser -->
+			</div><!-- leftPanel -->
+
+			<div id="rightPanel">
+				<div id="rightUp">
+					<div id="videoPanel">
+                        <!-- videoLoading will be hidden and videoContent will be shown when connected -->
+                        <div id="videoLoading">
+                            <img src="image/logobig.png" alt="logo" width="300px" />
+                            <div id="startAllVideo">Start Video</div>
+                        </div><!-- videoLoading -->
+                        <div id="videoContent">
+            	            <div class="video-f" id="video-f">
+                                <video width="100%" height="100%" id="remoteView" autoplay></video>
+                            </div>
+                            <div class="video-s" id="video-s" width="100%">
+                                <video width="100%" height="100%" id="localView"  autoplay ></video>
+                            </div>
+                        </div><!-- videoContent -->
+					</div><!-- videoPanel -->
+					<div id="textPanel" class="shadow">
+						<div id="chatPanel">
+						</div><!-- chatPanel -->
+						<div id="inputPanel">
+							<input id="chatInput"></input>
+							<button id="chatSend">Send</button>
+						</div><!-- inputPanel -->
+					</div><!-- textPanel -->
+				</div><!-- rightUp -->
+
+				<div id="rightBottom">
+					<div id="effectPanel">
+						<div id="effectMain">
+							<button class="effectBtn" id="effect1">Effect1</button>
+							<button class="effectBtn" id="effect2">Effect2</button>
+							<button class="effectBtn" id="effect3">Effect3</button>
+							<button class="effectBtn" id="effect4">Effect4</button>
+						</div><!-- effect -->
+					</div><!-- effectPanel -->
+					<div id="wavePanel" class="shadow">
+						<div id="waveMain">
+							<canvas id="waveCanvas"></canvas>
+						</div><!-- waveMain -->
+					</div><!-- wavePanel -->
+				</div><!-- rightBottom -->
+			</div><!-- rightPanel -->
+		</div><!-- content -->
+	</body>
+</html>
