@@ -212,26 +212,25 @@
 }
 
 .videoMsg {
-    width: 50px;
     margin: 5px 5px 0px 0px;
     color: #ddd;
-    box-shadow: inset 0px 0px 2px 2px #999;
-    border-radius: 2px;
+    border-radius: 5px;
+    padding: 8px;
+    text-align: center;
 }
 
 .acceptVideoBtn {
     background-color: #43701B;
+    color: #BEE39D;
+    box-shadow: inset 0px 0px 5px 2px #CBE3B5;
     cursor: pointer;
 }
 
 .denyVideoBtn {
     background-color: #7B1E22;
+    color: #EBA3A6;
+    box-shadow: inset 0px 0px 5px 2px #EBBBBD;
     cursor: pointer;
-}
-
-.disabledVideoBtn {
-    background-color: #ccc;
-    color: #333;
 }
 
 #inputPanel {

@@ -993,20 +993,18 @@ function denyVideo() {
 }
 
 function showVideoInit() {
-	addMessage(-1, 'System', 'You\'ve received a video chat request. Accept or deny it? <span class="videoMsg acceptVideoBtn">Accept</span><span class="videoMsg denyVideoBtn">Deny</span>');
+	addMessage(-1, 'System', 'You\'ve received a video chat request. <div class="chatPanelBtn"><div class="videoMsg acceptVideoBtn">Accept</div><div class="videoMsg denyVideoBtn">Decline</div></div>');
 	$(".acceptVideoBtn").click(function(){
 		agreeVideo();
-		$(".videoMsg").removeClass("acceptVideoBtn")
-			.removeClass("denyVideoBtn")
-			.addClass("disabledVideoBtn");
-    		$("#videoLoading").hide();
+        $("#videoLoading").hide();
 		$("#videoContent").show();
+        $(this).parent().parent().append("<br />You have accepted the video chat.");
+        $(this).parent().remove(".chatPanelBtn");
 	});
 	$(".denyVideoBtn").click(function(){
 		denyVideo();
-		$(".videoMsg").removeClass("acceptVideoBtn")
-			.removeClass("denyVideoBtn")
-			.addClass("disabledVideoBtn");
+        $(this).parent().parent().append("<br />You have declined the video chat.");
+        $(this).parent().remove(".chatPanelBtn");
 	});
 	//$('#video-from').text(Strophe.getBareJidFromJid(videoInvitor));
 	//$('#video-invitation').removeClass("hidden");
