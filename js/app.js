@@ -12,16 +12,19 @@ $(document).ready(function(){
 			$("#remoteView").width(newWidth).height(height)
 				.css("margin-left", (width - newWidth) / 2)
 				.css("margin-top", 0);
+		    // local video
+    		$("#video-s").css("right", 
+	    		(width - newWidth) / 2 + $("#textPanel").width())
+                .css("bottom", 150);
 		} else {
 			var newHeight = width * 3 / 4;
 			$("#remoteView").width(width).height(newHeight)
 				.css("margin-top", (height - newHeight) / 2)
 				.css("margin-left", 0);
+            $("#video-s").css("right", $("#textPanel").width())
+                .css("bottom", 150 + (height - newHeight) / 2);
 		}
 		
-		// local video
-		$("#video-s").css("left", 
-			$(window).width() - $("#textPanel").width() - 250);
 	});
 		
     $("#otherHead").click(function(){
