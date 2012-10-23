@@ -44,7 +44,7 @@ $(document).ready(function(){
     $(".addUser").click(addUser);
     $(".deleteUser").click(deleteUser);
     
-    $("#chatPanel").css("max-height", $(window).height() 
+    $("#chatPanel").css("max-height", $(document).height() 
 		- $("#inputPanel").height() 
 		- parseInt($("#chatPanel").css("margin")) * 2);
 
@@ -120,14 +120,14 @@ function addMessage(clientId, clientName, content) {
     var timeStr = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
     msg += '">' + clientName + '</div><div class="chatMsgTime">' + timeStr + '</div><div class="chatMsgText">' + content + '</div></div>';
     $("#chatPanel").append(msg);
+    $("#chatPanel").animate({
+		scrollTop: $("#chatPanel")[0].scrollHeight}, 200);
 }
 
 function sendMessage() {
     addMessage(1, myInfo.bareJid, $("#chatInput").val());
     sendTextMessage(myInfo.rosters[0], $("#chatInput").val());
     $("#chatInput").val("");
-    $("#chatPanel").animate({
-		scrollTop: $("#chatPanel")[0].scrollHeight}, 1000);
 }
 
 function initVideo() {
