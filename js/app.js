@@ -64,6 +64,9 @@ $(document).ready(function(){
     $("#startAllVideo").click(function(){
         startVideo();
     });
+    $("#videoStopBtn").click(function(){
+        stopVideo();
+    });
 
     $("#effect1").click(function(){
         soundEffect.use(0);
@@ -144,5 +147,6 @@ function startVideo() {
 }
 
 function stopVideo() {
+    stopVideoChat();
 	initVideo();
 }

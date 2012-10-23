@@ -50,13 +50,17 @@ function RemotePeer(jid) {
     	trace("closing video in " +this.jid);
     	this.peerConn.close();
     	if(local_stream!=null) {
-//    		local_stream.stop();
-//    		local_stream = null;
-    		if(local_stream.tracks[1]) {
-    			local_stream.tracks[1].enabled = false;
+    		if(local_stream.audioTracks[1]) {
+    			local_stream.audioTracks[1].enabled = false;
     		}
-    		if(local_stream.tracks[0]) {
-    			local_stream.tracks[0].enabled = false;
+    		if(local_stream.audioTracks[0]) {
+    			local_stream.audioTracks[0].enabled = false;
+    		}
+    		if(local_stream.videoTracks[1]) {
+    			local_stream.videoTracks[1].enabled = false;
+    		}
+    		if(local_stream.videoTracks[0]) {
+    			local_stream.videoTracks[0].enabled = false;
     		}
     	}
     	_this.state = "CLOSED";

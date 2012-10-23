@@ -443,27 +443,6 @@ function initPage() {
    // 	startVideoChat(gCurrChatJid);
    // });
     
-    $('#endVideoChat').click(function () {
-                 // local_stream.stop(); here is bug 
-   	if(gCurrVideoJid!=null&&(gVideoChatState==VideoState.VIDEO_STATE_CONNECTED||gVideoChatState==VideoState.VIDEO_STATE_CONNECTING)) {
-    		var currVideoPeer = getUserPeer(gCurrVideoJid);
-    		currVideoPeer.closeVideo();
-                  local_stream.stop();
-            var closeMsg = $msg({to: gCurrVideoJid, "type": "chat"}).c('video-chat', {type: "video-close"});
-            Gab.connection.send(closeMsg);
-            moveChatArea("right");
-    		gCurrVideoJid = null;
-    		gInvited = false;
-                // stopMultipleConnection();
-        $('#text_logo').removeClass("hidden"); 
-        $('#intel_logo').removeClass("hidden"); 
-        $('#biglogo').removeClass("hidden"); 
-          $('#videobox-f').addClass("hidden");
-		$('#remoteView').addClass("hidden");
-    		gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
-    	}
-    });
-    
     $('#closeLocal').click(function () {
     	if(local_stream!=null) {
 //    		local_stream.stop();
@@ -577,7 +556,7 @@ function initPage() {
     $('#search-img').click(function() {
     	var name = trim($('#searchbox').val());
     	if(name==""||name==null) {
-    		notify("Please enter something to search.");
+    		alert("Please enter something to search.");
     		return;
     	}
     	var searchStr = getSearchString(name);
@@ -585,9 +564,25 @@ function initPage() {
         if (xml) {
             Gab.connection.send(xml);
         } else {
-            notify("error");
+            alert("error");
         }
     });
+}
+
+function stopVideoChat() {
+	if(gCurrVideoJid!=null && (gVideoChatState==VideoState.VIDEO_STATE_CONNECTED
+			|| gVideoChatState == VideoState.VIDEO_STATE_CONNECTING)) {
+		var currVideoPeer = getUserPeer(gCurrVideoJid);
+		currVideoPeer.closeVideo();
+		local_stream.stop();
+		var closeMsg = $msg({to: gCurrVideoJid, "type": "chat"}).c('video-chat', {type: "video-close"});
+		Gab.connection.send(closeMsg);
+		moveChatArea("right");
+		gCurrVideoJid = null;
+		gInvited = false;
+		// stopMultipleConnection();
+		gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
+	}
 }
 
 function toFull(){ 
@@ -629,11 +624,11 @@ function setVideoFullScreen(fullscreen) {
 
 function sendTextMessage(jid, body) {
     if(body==null||body=="") {
-    	notify("You cannot send empty message.");
+    	alert("You cannot send empty message.");
     	return;
     }
     if(jid==null) {
-    	notify("Please select a contact first.");
+    	alert("Please select a contact first.");
     	return;
     }
     var message = $msg({to: jid, "type": "chat"}).c('body').t(body).up().c('active', {xmlns: "http://jabber.org/protocol/chatstates"});
@@ -668,22 +663,6 @@ $(document).ready(function () {
 	initPage();
 	toFull();
 });
-
-function notify(msg) {
-	$('#notification').text(msg);
-	var left = $('#R5').offset().left+$('#R5').width()/2-$('#notification').width()/2;
-	var top = $('#R5').offset().top+$('#R5').width()/2+125;
-	$('#notification').css({'top':top, 'left':left});
-	$('#notification').removeClass("hidden");
-	
-	$('#notification').animate({opacity: "0.7"}, 1000, null, function() {
-		setTimeout(function() {
-			$('#notification').animate({opacity: "0"}, 2000, null, function() {
-				$('#notification').addClass("hidden");
-			});
-		}, 3000);
-	});
-}
 
 function bindDocumentEvent() {
 	//Register an account
@@ -759,7 +738,7 @@ function startTextChat(jid, name) {
 
 function startForwarding(jid){
               if(jid==null){                 
-		notify("Please select a contact first.");
+		alert("Please select a contact first.");
 		return;
 	}
 	var jid = jid;
@@ -790,7 +769,7 @@ function handleForwardingMsg(message) {
             gInvited = true;
             showForwardInit();
 	//		startVideoCall();
-    	//	notify("You've received a forward invitation from "+jid+", you can stop current connection to accept it.");
+    	//	alert("You've received a forward invitation from "+jid+", you can stop current connection to accept it.");
         return true;
     }
     //remote has agreed to forwarding
@@ -798,7 +777,7 @@ function handleForwardingMsg(message) {
         trace(full_jid+" has agreed to forwarding.");
         gCurrVideoJid = jid;
 		
-    		//notify("You've received a forward invitation from "+jid+", you should stop current connection to accept it.");
+    		//alert("You've received a forward invitation from "+jid+", you should stop current connection to accept it.");
 		//need to check
 		stopMultipleConnection();
 		//startVideoCall();
@@ -814,7 +793,7 @@ function handleForwardingMsg(message) {
     //remote has denied forwarding
     if(msgType=='video-forwarding-reject') {
         trace(full_jid+" has denied to forwarding .");
-        notify(jid+" has denied your forwarding request.");
+        alert(jid+" has denied your forwarding request.");
         return true;
     }
  
@@ -829,13 +808,13 @@ function showForwardInit() {
 //Send a video chat invitation to jid
 function startVideoChat(gCurrChatJid) {
 	if(gCurrChatJid==null) {
-		notify("Please select a contact first.");
+		alert("Please select a contact first.");
 		return;
 	}
 	var jid = gCurrChatJid;
 //	startTextChat(jid);
 	if(gVideoChatState==VideoState.VIDEO_STATE_CONNECTING) {
-		notify("Connecting to mixserver please wait.");
+		alert("Connecting to mixserver please wait.");
 		return;
 	} else if(gVideoChatState==VideoState.VIDEO_STATE_CONNECTED) {
 		return;
@@ -855,11 +834,17 @@ function startVideoChat(gCurrChatJid) {
 		}, 200);
 	} else {
 		trace("localstream not null!");
-		if(local_stream.tracks[1]) {
-			local_stream.tracks[1].enabled = true;
+		if(local_stream.audioTracks[1]) {
+			local_stream.audioTracks[1].enabled = true;
 		}
-		if(local_stream.tracks[0]) {
-			local_stream.tracks[0].enabled = true;
+		if(local_stream.audioTracks[0]) {
+			local_stream.audioTracks[0].enabled = true;
+		}
+		if(local_stream.videoTracks[1]) {
+			local_stream.videoTracks[1].enabled = true;
+		}
+		if(local_stream.videoTracks[0]) {
+			local_stream.videoTracks[0].enabled = true;
 		}
 /*	    var url = webkitURL.createObjectURL(local_stream);
 	    document.getElementById("localView").src = url;*/
@@ -905,7 +890,7 @@ function handleVideoMsg(message) {
             break;
     	case VideoState.VIDEO_STATE_CONNECTED:
     	case VideoState.VIDEO_STATE_CONNECTING:
-    		notify("You've received a video invitation from "+jid+", you can stop current connection to accept it.");
+    		alert("You've received a video invitation from "+jid+", you can stop current connection to accept it.");
     	}
         return true;
     }
@@ -922,7 +907,7 @@ function handleVideoMsg(message) {
     if(msgType=='video-deny') {
     	gVideoChatState = VideoState.VIDEO_STATE_READY;
         trace(full_jid+" has denied to video chat.");
-        notify(jid+" has denied your video request.");
+        alert(jid+" has denied your video request.");
         if(local_stream!=null) {
 //        	local_stream.stop();
         	if(local_stream.tracks[1]) {
@@ -947,14 +932,13 @@ function handleVideoMsg(message) {
     if(msgType=='video-close') {
     	if(gVideoChatState==VideoState.VIDEO_STATE_CONNECTED) {
     		gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
-    		setVideoFullScreen(false);
         	gInvited = false;
-    		notify(full_jid+" has closed video chat.");
     		var userPeer = getUserPeer(jid);
     		if(userPeer!=null) {
     			userPeer.closeVideo();
-    			moveChatArea("right");
+    			console.log(userPeer);
     		}
+    		stopVideoChat();
     	}
     	return true;
     }
@@ -974,12 +958,18 @@ function agreeVideo() {
 			navigator.webkitGetUserMedia({audio: true, video: true}, gotStream, gotStreamFailed);
 		} else {
 			trace("local stream not null!");
-			if(local_stream.tracks[1]) {
-				local_stream.tracks[1].enabled = true;
-			}
-			if(local_stream.tracks[0]) {
-				local_stream.tracks[0].enabled = true;
-			}
+    		if(local_stream.audioTracks[1]) {
+    			local_stream.audioTracks[1].enabled = true;
+    		}
+    		if(local_stream.audioTracks[0]) {
+    			local_stream.audioTracks[0].enabled = true;
+    		}
+    		if(local_stream.videoTracks[1]) {
+    			local_stream.videoTracks[1].enabled = true;
+    		}
+    		if(local_stream.videoTracks[0]) {
+    			local_stream.videoTracks[0].enabled = true;
+    		}
 	    	var videoAgree = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-agree"});
 	        Gab.connection.send(videoAgree);
 	        gCurrVideoJid = videoInvitor;
@@ -1093,16 +1083,16 @@ function moveChatArea(direction) {
 function text_to_xml(text) {
     var doc = null;
     if (window['DOMParser']) {
-    	notify('window DOMParser');
+    	alert('window DOMParser');
         var parser = new DOMParser();
         doc = parser.parseFromString(text, 'text/xml');
     } else if (window['ActiveXObject']) {
-    	notify('window ActiveXObject');
+    	alert('window ActiveXObject');
         var doc = new ActiveXObject("MSXML2.DOMDocument");
         doc.async = false;
         doc.loadXML(text);
     } else {
-        notify("no DOMParser");
+        alert("no DOMParser");
     }
 
     var elem = doc.documentElement;
