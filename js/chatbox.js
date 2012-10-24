@@ -570,18 +570,26 @@ function initPage() {
 }
 
 function stopVideoChat() {
-	if(gCurrVideoJid!=null && (gVideoChatState==VideoState.VIDEO_STATE_CONNECTED
-			|| gVideoChatState == VideoState.VIDEO_STATE_CONNECTING)) {
+	if(gCurrVideoJid!=null) {
 		var currVideoPeer = getUserPeer(gCurrVideoJid);
-		currVideoPeer.closeVideo();
 		local_stream.stop();
-		var closeMsg = $msg({to: gCurrVideoJid, "type": "chat"}).c('video-chat', {type: "video-close"});
-		Gab.connection.send(closeMsg);
-		moveChatArea("right");
+		if (currVideoPeer == null) {
+			// stop because remote one stopped video
+			gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
+			// init video state
+			initVideo();
+			addMessage(-1, "System", "Romote has stopped the video chat.");
+		} else if (gVideoChatState==VideoState.VIDEO_STATE_CONNECTED
+				|| gVideoChatState == VideoState.VIDEO_STATE_CONNECTING){
+			// first one to stop video
+			currVideoPeer.closeVideo();
+			var closeMsg = $msg({to: gCurrVideoJid, "type": "chat"}).c('video-chat', {type: "video-close"});
+			Gab.connection.send(closeMsg);
+			// stopMultipleConnection();
+			gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
+		}
 		gCurrVideoJid = null;
 		gInvited = false;
-		// stopMultipleConnection();
-		gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
 	}
 }
 
@@ -983,13 +991,13 @@ function denyVideo() {
 }
 
 function showVideoInit() {
-	addMessage(-1, 'System', 'You\'ve received a video chat request. <div class="chatPanelBtn"><div class="videoMsg acceptVideoBtn">Accept</div><div class="videoMsg denyVideoBtn">Decline</div></div>');
+	addMessage(-1, 'System', 'You have received a video chat request. <div class="chatPanelBtn"><div class="videoMsg acceptVideoBtn">Accept</div><div class="videoMsg denyVideoBtn">Decline</div></div>');
 	$(".acceptVideoBtn").click(function(){
 		agreeVideo();
         $("#videoLoading").hide();
 		$("#videoContent").show();
-        $(this).parent().parent().append("<br />You have accepted the video chat.");
         $(this).parent().remove(".chatPanelBtn");
+        addMessage(-1, "System", "You have accepted the video chat.");
 	});
 	$(".denyVideoBtn").click(function(){
 		denyVideo();

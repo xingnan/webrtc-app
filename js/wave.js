@@ -17,7 +17,7 @@ $(document).ready(function(){
 		topBuf = [];
 		frameCnt = 0;
 
-		setInterval(drawWave, 4);
+		setInterval(drawWave, 40);
 	} else {
 		alert("Canvas not enabled!");
 	}
