@@ -54,6 +54,7 @@ function SoundEffect() {
     this.analyser = null;
     this.analyserData = new Uint8Array(analyserDataSize);
     this.analyserDataPos = 0;
+    this.dest = null;
 
     this.support = function () {
         if (this.context.createMediaStreamSource == undefined || this.context.createMediaStreamDestination == undefined) {
@@ -91,11 +92,11 @@ SoundEffect.prototype.init = function (stream) {
     if (this.context == null)
         this.context = new webkitAudioContext();
     var source = this.context.createMediaStreamSource(stream);
-    var dest = this.context.createMediaStreamDestination();
+    this.dest = this.context.createMediaStreamDestination();
     this.analyser = this.context.createAnalyser();
     this.analyser.fftSize = analyserDataSize;
     source.connect(this.analyser);
-    this.analyser.connect(dest);
+    this.analyser.connect(this.dest);
 
     this.gain = this.context.createGainNode();
     this.convolverGain = this.context.createGainNode();
@@ -110,7 +111,7 @@ SoundEffect.prototype.init = function (stream) {
     this.convolver.connect(this.convolverGain);
 
     this.convolverGain.connect(sumGain);
-    sumGain.connect(dest);
+    sumGain.connect(this.dest);
 }
 
 SoundEffect.prototype.list = function () {
@@ -152,4 +153,16 @@ SoundEffect.prototype.getTimeDomainData = function (array) {
     }
     this.analyser.getByteTimeDomainData(this.analyserData);
     //console.log(this.analyserData);
+}
+
+SoundEffect.prototype.waveOn = function () {
+	if (!this.support() || !this.analyser)
+        return;
+	this.analyser.connect(this.dest);
+}
+
+SoundEffect.prototype.waveOff = function () {
+	if (!this.support() || !this.analyser)
+        return;
+	this.analyser.disconnect();
 }

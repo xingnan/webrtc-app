@@ -842,6 +842,8 @@ function startVideoChat(gCurrChatJid) {
 		}, 200);
 	} else {
 		trace("localstream not null!");
+		$("#videoLoading").hide();
+		$("#videoContent").show();
 		if(local_stream.audioTracks[1]) {
 			local_stream.audioTracks[1].enabled = true;
 		}
@@ -863,13 +865,6 @@ function startVideoChat(gCurrChatJid) {
 	    var videoInvt = $msg({to: jid, "type": "chat"}).c('video-chat', {type: "video-invitation"});
 	    Gab.connection.send(videoInvt);
 	}
-       $('#text_logo').addClass("hidden");
-        $('#intel_logo').addClass("hidden");
-        $('#biglogo').addClass("hidden");
-          $('#videobox-f').removeClass("hidden");
-          $('#remoteView').removeClass("hidden");
-           $('#R5').css("background-image","url(./images/white.png");
-           $('#R5').css("background-color","transparent");
 
         // createMultipleConnection();
 
@@ -966,6 +961,8 @@ function agreeVideo() {
 			navigator.webkitGetUserMedia({audio: true, video: true}, gotStream, gotStreamFailed);
 		} else {
 			trace("local stream not null!");
+			$("#videoLoading").hide();
+			$("#videoContent").show();
     		if(local_stream.audioTracks[1]) {
     			local_stream.audioTracks[1].enabled = true;
     		}
@@ -994,8 +991,6 @@ function showVideoInit() {
 	addMessage(-1, 'System', 'You have received a video chat request. <div class="chatPanelBtn"><div class="videoMsg acceptVideoBtn">Accept</div><div class="videoMsg denyVideoBtn">Decline</div></div>');
 	$(".acceptVideoBtn").click(function(){
 		agreeVideo();
-        $("#videoLoading").hide();
-		$("#videoContent").show();
         $(this).parent().remove(".chatPanelBtn");
         addMessage(-1, "System", "You have accepted the video chat.");
 	});

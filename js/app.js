@@ -1,5 +1,11 @@
 $(document).ready(function(){
 	$(window).resize(function() {
+		// text chat height    
+		$("#chatPanel").css("max-height", $(document).height() 
+			- $("#inputPanel").height() 
+			- parseInt($("#chatPanel").css("margin")) * 2);
+		$("#chatPanel").scrollTop($("#chatPanel")[0].scrollHeight);
+		
 		// remote video
 		var margin = parseInt($("#video-s").css("margin"));
 		var width = $("#video-f").width();
@@ -24,7 +30,6 @@ $(document).ready(function(){
             $("#video-s").css("right", $("#textPanel").width())
                 .css("bottom", 150 + (height - newHeight) / 2);
 		}
-		
 	});
 		
     $("#otherHead").click(function(){
@@ -43,11 +48,12 @@ $(document).ready(function(){
 
     $(".addUser").click(addUser);
     $(".deleteUser").click(deleteUser);
-    
-    $("#chatPanel").css("max-height", $(document).height() 
+
+	// text chat height    
+	$("#chatPanel").css("max-height", $(document).height() 
 		- $("#inputPanel").height() 
 		- parseInt($("#chatPanel").css("margin")) * 2);
-
+		
     $("#chatSend").click(function(){
         sendMessage();
     });
@@ -123,8 +129,7 @@ function addMessage(clientId, clientName, content) {
     var timeStr = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
     msg += '">' + clientName + '</div><div class="chatMsgTime">' + timeStr + '</div><div class="chatMsgText">' + content + '</div></div>';
     $("#chatPanel").append(msg);
-    $("#chatPanel").animate({
-		scrollTop: $("#chatPanel")[0].scrollHeight}, 200);
+    $("#chatPanel").scrollTop($("#chatPanel")[0].scrollHeight);
 }
 
 function sendMessage() {
@@ -139,8 +144,6 @@ function initVideo() {
 }
 
 function startVideo() {
-    $("#videoLoading").hide();
-    $("#videoContent").show();
     // FIXME: check null
     //if (myInfo.rosters.length > 0)
         startVideoChat(myInfo.rosters[0]);

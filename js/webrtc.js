@@ -187,7 +187,9 @@ function gotStream(s) {
         Gab.connection.send(videoAgree);
         gCurrVideoJid = videoInvitor;
         gVideoChatState = VideoState.VIDEO_STATE_CONNECTED;
-    }
+    }        
+    $("#videoLoading").hide();
+	$("#videoContent").show();
 }
 
 function gotStreamFailed(error) {
