@@ -52,9 +52,12 @@ function SoundEffect() {
     this.gain = null;
     this.convolverGain = null;
     this.analyser = null;
+    this.analyserGain = null;
     this.analyserData = new Uint8Array(analyserDataSize);
     this.analyserDataPos = 0;
     this.dest = null;
+    
+    this.isStopped = true;
 
     this.support = function () {
         if (this.context.createMediaStreamSource == undefined || this.context.createMediaStreamDestination == undefined) {
@@ -95,7 +98,9 @@ SoundEffect.prototype.init = function (stream) {
     this.dest = this.context.createMediaStreamDestination();
     this.analyser = this.context.createAnalyser();
     this.analyser.fftSize = analyserDataSize;
-    source.connect(this.analyser);
+    this.analyserGain = this.context.createGainNode();
+    source.connect(this.analyserGain);
+    this.analyserGain.connect(this.analyser);
     this.analyser.connect(this.dest);
 
     this.gain = this.context.createGainNode();
@@ -112,6 +117,8 @@ SoundEffect.prototype.init = function (stream) {
 
     this.convolverGain.connect(sumGain);
     sumGain.connect(this.dest);
+    
+    this.isStopped = false;
 }
 
 SoundEffect.prototype.list = function () {
@@ -141,28 +148,36 @@ SoundEffect.prototype.getTimeDomainData = function (array) {
     if (!this.support() || !this.analyser)
         return;
 
-    for (var i = 0; i < array.length; i++) {
-        var v = this.analyserData[this.analyserDataPos];
-        v -= 128;
-        v *= 4;
-        v = v < 0 ? 0 : v;
-        v = v > 32 ? 32 : v;
-        array[i] = v;
-        this.analyserDataPos++;//= analyserDataSize / array.length;
-        this.analyserDataPos %= analyserDataSize;
-    }
+	if (!this.isStopped) {
+		for (var i = 0; i < array.length; i++) {
+			var v = this.analyserData[this.analyserDataPos];
+			v -= 128;
+			v *= 4;
+			v = v < 0 ? 0 : v;
+			v = v > 32 ? 32 : v;
+			array[i] = v;
+			this.analyserDataPos++;//= analyserDataSize / array.length;
+			this.analyserDataPos %= analyserDataSize;
+		}
+	} else {
+		for (var i = 0; i < array.length; i++) {
+			array[i] = 0;
+		}
+	}
     this.analyser.getByteTimeDomainData(this.analyserData);
     //console.log(this.analyserData);
 }
 
 SoundEffect.prototype.waveOn = function () {
-	if (!this.support() || !this.analyser)
+	if (!this.support() || !this.analyserGain)
         return;
-	this.analyser.connect(this.dest);
+	this.analyserGain.connect(this.analyser);
 }
 
 SoundEffect.prototype.waveOff = function () {
-	if (!this.support() || !this.analyser)
+	console.log(this.analyserGain);
+	if (!this.support() || !this.analyserGain)
         return;
-	this.analyser.disconnect();
+	this.analyserGain.disconnect();
+	this.isStopped = true;
 }

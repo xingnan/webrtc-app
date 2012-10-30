@@ -590,6 +590,7 @@ function stopVideoChat() {
 		}
 		gCurrVideoJid = null;
 		gInvited = false;
+		soundEffect.waveOff();
 	}
 }
 

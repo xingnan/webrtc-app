@@ -37,12 +37,10 @@ function resize() {
 
 function drawWave() {
 	++frameCnt;
-	//if (frameCnt % 8 == 0) { 
-		var buf = new Array(barCnt);
-                soundEffect.getTimeDomainData(buf);
-		waveBuf = buf;
-	//}
-
+	var buf = new Array(barCnt);
+	soundEffect.getTimeDomainData(buf);
+	waveBuf = buf;
+		
 	// update top piece
 	for (var i = 0; i < barCnt; ++i) {
 		var pos = totalHeight - (pieceGap + pieceHeight) * Math.floor(waveBuf[i]) - pieceGap / 2;
