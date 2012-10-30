@@ -96,6 +96,10 @@ $(document).ready(function(){
     $("#effect4").click(function(){
         soundEffect.use(3);
     });
+    
+    $(".effectBtn").click(function() {
+		addMessage(-1, "System", $(this).attr("id") + " has been applied");
+	});
 });
 
 function deleteUser() {
