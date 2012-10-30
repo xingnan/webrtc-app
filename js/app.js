@@ -144,12 +144,15 @@ function initVideo() {
 }
 
 function startVideo() {
+	$("#videoLoading").hide();
+	addMessage(-1, "System", "Please wait for remote side's acception.");
     // FIXME: check null
     //if (myInfo.rosters.length > 0)
         startVideoChat(myInfo.rosters[0]);
 }
 
 function stopVideo() {
+	addMessage(-1, "System", "You have stopped the video chat.");
     stopVideoChat();
 	initVideo();
 }

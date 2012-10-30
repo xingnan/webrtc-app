@@ -44,6 +44,10 @@ function RemotePeer(jid) {
     		return;
     	}
         this.peerConn.addStream(local_stream);
+		// show video on both sides
+		addMessage(-1, "System", "Video chat has been started.");
+		$("#videoLoading").hide();
+		$("#videoContent").show();
     };
     
     this.closeVideo = function() {
@@ -179,17 +183,21 @@ function gotStream(s) {
     // Insert the local media filter with audio
     soundEffect.init(local_stream);
     //soundEffect.use(2);
-
-    //  $('#localView').play();
-  //  moveChatArea("left");
+    
+    if (gVideoChatState == VideoState.VIDEO_STATE_CONNECTING) {
+		// video starter side
+	} else if (gVideoChatState == VideoState.VIDEO_STATE_READY) {
+		// video acceptor side
+		$("#videoLoading").hide();
+		$("#videoContent").show();
+	}
+	
     if(gInvited) {
     	var videoAgree = $msg({to: videoInvitor, "type": "chat"}).c('video-chat', {type: "video-agree"});
         Gab.connection.send(videoAgree);
         gCurrVideoJid = videoInvitor;
         gVideoChatState = VideoState.VIDEO_STATE_CONNECTED;
-    }        
-    $("#videoLoading").hide();
-	$("#videoContent").show();
+    }
 }
 
 function gotStreamFailed(error) {

@@ -572,7 +572,7 @@ function initPage() {
 function stopVideoChat() {
 	if(gCurrVideoJid!=null) {
 		var currVideoPeer = getUserPeer(gCurrVideoJid);
-		local_stream.stop();
+		local_stream = null;
 		if (currVideoPeer == null) {
 			// stop because remote one stopped video
 			gVideoChatState = VideoState.VIDEO_STATE_STOPPED;
@@ -599,36 +599,6 @@ function toFull(){
 //	var e = jQuery.Event();
 	// trigger an artificial keydown event with keyCode 64
 	$(document).trigger("keydown", { keyCode: 122 });
-}
-
-function setVideoFullScreen(fullscreen) {
-	if(fullscreen) {
-		if(gVideoChatState=VideoState.VIDEO_STATE_CONNECTED) {
-			//$('#endfullscreen').css({position:"absolute",'z-index':14, 'top':0, 'left':$(window).width()-$('#endfullscreen').width()});
-			$('#endfullscreen').css({position:"absolute",'z-index':14, 'top':0, 'left':800-$('#endfullscreen').width()});
-			$('#endfullscreen').removeClass("hidden");
-		//	$('#mask').removeClass("hidden");
-        		$('#R5').css({position:"absolute", 'width':"800px",'height':"600px",'top':0,'left':0, 'margin-top':0, 'margin-left':0});
-			$('#videobox-f').css({position:"relactive",'width':"800px",'height':"600px", 'top':0, 'left':0, 'margin-top':0, 'margin-left':0});
-			$('#remoteView').css({position:"relactive", 'top':0, 'left':0, 'width':"800px", 'height':"600px"});
-			//$('.videobox-u').css({position:"absolute", 'z-index':15, 
-//			$('.video-f').css({position:"relactive",
-//				'top':$(window).height()-$('.videobox-f').height(), 
-		//		'left':$(window).width()-$('.videobox-f').width(), 'margin-top':0});
-		//	$('.controllbar-f').addClass("hidden");
-                  $('#send').addClass("hidden");      
-		}
-	} else {
-		$('#endfullscreen').addClass("hidden");
-		$('#endfullscreen').removeAttr("style");
-	//	$('#mask').addClass("hidden");
-		$('#R5').removeAttr("style");
-		$('#remoteView').removeAttr("style");
-		$('.videobox-f').removeAttr("style");
-//		$('.video-f').removeAttr("style");
-                $('#send').removeClass("hidden");
-	}
-
 }
 
 function sendTextMessage(jid, body) {
@@ -843,8 +813,6 @@ function startVideoChat(gCurrChatJid) {
 		}, 200);
 	} else {
 		trace("localstream not null!");
-		$("#videoLoading").hide();
-		$("#videoContent").show();
 		if(local_stream.audioTracks[1]) {
 			local_stream.audioTracks[1].enabled = true;
 		}
@@ -963,7 +931,6 @@ function agreeVideo() {
 		} else {
 			trace("local stream not null!");
 			$("#videoLoading").hide();
-			$("#videoContent").show();
     		if(local_stream.audioTracks[1]) {
     			local_stream.audioTracks[1].enabled = true;
     		}
