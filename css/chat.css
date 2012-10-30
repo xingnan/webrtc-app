@@ -148,9 +148,9 @@
     display: none;
 }
 
-#videoDiv {
-    padding-top: 40px; /* for videoBtnPanel */
+.videoDiv {
 	cursor: move;
+	z-index: 1;
 }
 
 .videoHeader {
