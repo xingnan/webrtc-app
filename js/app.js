@@ -6,8 +6,15 @@ $(document).ready(function(){
 			- parseInt($("#chatPanel").css("margin")) * 2);
 		$("#chatPanel").scrollTop($("#chatPanel")[0].scrollHeight);
 		
+		$(".videoDiv").draggable()/*.resizable()
+			.resize(function() {
+				// resize video tag
+				$(this).find("video").width($(this).css("width"));
+				$(this).find("video").height($(this).css("height"));
+			})*/;
+		
 		// remote video
-		var margin = parseInt($("#video-s").css("margin"));
+		/*var margin = parseInt($("#video-s").css("margin"));
 		var width = $("#video-f").width();
 		if (width <= 0) {
 			return;
@@ -29,7 +36,7 @@ $(document).ready(function(){
 				.css("margin-left", 0);
             $("#video-s").css("right", $("#textPanel").width())
                 .css("bottom", 150 + (height - newHeight) / 2);
-		}
+		}*/
 	});
 		
     $("#otherHead").click(function(){

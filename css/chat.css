@@ -148,24 +148,25 @@
     display: none;
 }
 
+#videoDiv {
+    padding-top: 40px; /* for videoBtnPanel */
+	cursor: move;
+}
+
+.videoHeader {
+	padding: 5px;
+}
+
 #video-s {
-    width: 200px;
-    height: 150px;
     position: absolute;
-    bottom: 150px;
-    margin: 20px;
-    box-shadow: 1px 1px 5px 5px #D0BD75;
+    left: 550px;
+    top: 40px;
 }
 
 #video-f {
     position: absolute;
-    left: 260px;
-    top: 0px;
-    right: 250px;
-    bottom: 150px;
-    padding: 20px;
-    min-width: 200px;
-    margin-top: 40px; /* for videoBtnPanel */
+    left: 280px;
+    top: 40px;
 }
 
 #videoBtnPanel {
