@@ -63,6 +63,11 @@ $(document).ready(function () {
             jid: id + "@" + domain,// + "/" + device,
             password: "rt24"
         });
+        // If not successfully logged in in 3 seconds, it will tell
+        // users that the server is down
+        setTimeout(function(){
+			alert("Server is currently down. Please try again later.");
+		}, 1000 * 3);
     });
 });
 

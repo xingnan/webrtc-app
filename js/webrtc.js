@@ -45,7 +45,6 @@ function RemotePeer(jid) {
     	}
         this.peerConn.addStream(local_stream);
 		// show video on both sides
-		addMessage(-1, "System", "Video chat has been started.");
 		$("#videoLoading").hide();
 		$("#videoContent").show();
     };

@@ -157,9 +157,29 @@ function initVideo() {
 function startVideo() {
 	$("#videoLoading").hide();
 	addMessage(-1, "System", "Please wait for remote side's acception.");
+	addMessage(-1, "System", "<div id='videoTimeDiv'>Timeout in 30 seconds.</div>");
+	$(".chatMsg").last().addClass("videoInvite");
+	videoInviteSecond = 1;
+	videoInvTimeout = setTimeout(videoInviSendTimer, 1000);
     // FIXME: check null
     //if (myInfo.rosters.length > 0)
         startVideoChat(myInfo.rosters[0]);
+}
+
+function videoInviSendTimer() {
+	if (videoInviteSecond < 30) {
+		// Remove last time message
+		$(".videoInvite").last().remove();
+		addMessage(-1, "System", "<div id='videoTimeDiv'>Timout in " + 
+			(60 - videoInviteSecond) + " seconds.</div>");
+		$(".chatMsg").last().addClass("videoInvite");
+		videoInvTimeout = setTimeout(videoInviSendTimer, 1000);
+		videoInviteSecond += 1;
+	} else {
+		denyVideo();
+        addMessage(-1, "System", "Closed because remote has no response.");
+        initVideo();
+	}
 }
 
 function stopVideo() {

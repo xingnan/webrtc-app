@@ -873,13 +873,18 @@ function handleVideoMsg(message) {
         gCurrVideoJid = jid;
 
 		startVideoCall(full_jid);
+        addMessage(-1, 'System', 'Remote has accepted to video chat.');
+        clearTimeout(videoInvTimeout);
 		return true;
     }
     //remote has denied video chat
     if(msgType=='video-deny') {
     	gVideoChatState = VideoState.VIDEO_STATE_READY;
         trace(full_jid+" has denied to video chat.");
-        alert(jid+" has denied your video request.");
+        
+		$(".videoInvite").last().remove();
+        addMessage(-1, 'System', 'Remote has denied to video chat.');
+        initVideo();
         if(local_stream!=null) {
 //        	local_stream.stop();
         	if(local_stream.tracks[1]) {
@@ -889,7 +894,6 @@ function handleVideoMsg(message) {
     			local_stream.tracks[0].enabled = false;
     		}
         }
-        moveChatArea("right");
         return true;
     }
     //signaling msg video chat
@@ -956,19 +960,54 @@ function denyVideo() {
 }
 
 function showVideoInit() {
-	addMessage(-1, 'System', 'You have received a video chat request. <div class="chatPanelBtn"><div class="videoMsg acceptVideoBtn">Accept</div><div class="videoMsg denyVideoBtn">Decline</div></div>');
+	addMessage(-1, 'System', 'You have received a video chat request. ' 
+		+ '<div class="chatPanelBtn"><div class="videoMsg ' 
+		+ 'acceptVideoBtn">Accept</div><div class="videoMsg ' 
+		+ 'denyVideoBtn">Decline</div></div>');
+	// Call videoInvitationTimeer each second, if time is out, deny the video invitation
+	videoInviteSecond = 1;
+	addMessage(-1, "System", "<div id='videoTimeDiv'>Timout in 30 seconds.</div>");
+	$(".chatMsg").last().addClass("videoInvite");
+	videoInvTimeout = setTimeout(videoInvitationTimer, 1000);
 	$(".acceptVideoBtn").click(function(){
 		agreeVideo();
+		
+		clearTimeout(videoInvTimeout);
+		// Remove last time message
+		$(".chatMsg").last().remove();
+		
         $(this).parent().remove(".chatPanelBtn");
         addMessage(-1, "System", "You have accepted the video chat.");
 	});
 	$(".denyVideoBtn").click(function(){
 		denyVideo();
+		
+		clearTimeout(videoInvTimeout);
+		// Remove last time message
+		$(".chatMsg").last().remove();
+		
         $(this).parent().parent().append("<br />You have declined the video chat.");
         $(this).parent().remove(".chatPanelBtn");
 	});
 	//$('#video-from').text(Strophe.getBareJidFromJid(videoInvitor));
 	//$('#video-invitation').removeClass("hidden");
+}
+
+function videoInvitationTimer() {
+	if (videoInviteSecond < 30) {
+		// Remove last time message
+		$(".videoInvite").last().remove();
+		addMessage(-1, "System", "<div id='videoTimeDiv'>Timout in " + 
+			(60 - videoInviteSecond) + " seconds.</div>");
+		$(".chatMsg").last().addClass("videoInvite");
+		videoInvTimeout = setTimeout(videoInvitationTimer, 1000);
+		videoInviteSecond += 1;
+	} else {
+		denyVideo();
+        addMessage(-1, "System", "You have declined the video chat.");
+        $('.chatPanelBtn').remove();
+        initVideo();
+	}
 }
 
 //return a new chat tab content
