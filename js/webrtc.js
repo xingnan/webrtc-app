@@ -9,8 +9,8 @@ function RemotePeer(jid) {
 	trace("New RemotePeer, jid: "+this.jid);
 	var _this = this;
 	
-	//var stun = "STUN NONE";
-	var stun = "STUN stun.l.google.com:19302";
+	var stun = "STUN NONE";
+	//var stun = "STUN stun.l.google.com:19302";
 
 	this.peerConn = new webkitPeerConnection00(stun, function(candidate, moreToFollow) {
 		if (candidate) {
