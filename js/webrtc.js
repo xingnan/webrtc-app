@@ -12,15 +12,14 @@ function RemotePeer(jid) {
 	var stun = "STUN NONE";
 	//var stun = "STUN stun.l.google.com:19302";
 
-	this.peerConn = new webkitPeerConnection00(stun, function(candidate, moreToFollow) {
-		if (candidate) {
-			_this.sendMessage({type: 'candidate', label: candidate.label, candidate: candidate.toSdp()});
-    	}
+    this.peerConn = new webkitRTCPeerConnection(null);
 
-    	if (!moreToFollow) {
-      		trace("End of candidates.");
-    	}
-	});
+    this.peerConn.onicecandidate = function(event) {
+        if (event.candidate) {
+            _this.sendMessage({type: 'candidate', candidate: event.candidate.candidate, sdpMid: event.candidate.sdpMid, sdpMLineIndex: event.candidate.sdpMLineIndex});
+        }
+    };
+
     this.peerConn.onaddstream = function(e) {
     	trace("onaddstream");
     	var stream = this.remoteStreams[0];
@@ -70,12 +69,13 @@ function RemotePeer(jid) {
     	_this.fullJid=null;
     	_this.jid=null;
     };
-	this.doCall = function() {
-    	trace("Send offer to " + this.jid);
-   	 	var offer = this.peerConn.createOffer({audio:true, video:true});
-    	this.peerConn.setLocalDescription(this.peerConn.SDP_OFFER, offer);
-    	this.sendMessage({type: 'offer', sdp: offer.toSdp()});
-        this.peerConn.startIce();
+
+    this.doCall = function() {
+        trace("Send offer to " + this.jid);
+        this.peerConn.createOffer(function(desc){
+            _this.peerConn.setLocalDescription(desc);
+    	    _this.sendMessage({type: 'offer', descType: desc.type, sdp: desc.sdp});
+        });
         if(_this.state=="READY") {
         	_this.state = "CONNECTING";
         }
@@ -89,34 +89,31 @@ console.log('C->S: ' +data);
 //console.log("Send: " + sigMsg);
         Gab.connection.send(sigMsg);
 	};
-	this.processSignalingMessage = function(message) {
-		var msg = JSON.parse(message);
-	console.log('S->C: ' + msg);
 
-    	if (msg.type === 'offer') {
-      	// Callee creates PeerConnection
-      	//if (!initiator && !started)
-        //maybeStart();
+    this.processSignalingMessage = function(message) {
+        var msg = JSON.parse(message);
+        console.log('S->C: ' + msg);
 
-      		this.peerConn.setRemoteDescription(this.peerConn.SDP_OFFER, new SessionDescription(msg.sdp));
-      		this.doAnswer();
+        if (msg.type === 'offer') {
+      	    this.peerConn.setRemoteDescription(new RTCSessionDescription({type: msg.descType, sdp: msg.sdp}));
+            this.doAnswer();
     	} else if (msg.type === 'answer') {
-      		this.peerConn.setRemoteDescription(this.peerConn.SDP_ANSWER, new SessionDescription(msg.sdp));
+      	    this.peerConn.setRemoteDescription(new RTCSessionDescription({type: msg.descType, sdp: msg.sdp}));
     	} else if (msg.type === 'candidate') {
-      		var candidate = new IceCandidate(msg.label, msg.candidate);
-      		this.peerConn.processIceMessage(candidate);
-		} else if (msg.type === 'bye') {
+            var candidate = new RTCIceCandidate({candidate: msg.candidate, sdpMid: msg.sdpMid, MLineIndex: msg.MLineIndex});
+            this.peerConn.addIceCandidate(candidate);
+        } else if (msg.type === 'bye') {
 			//FIXME onRemoteHangup();
     	}
-	};
-	this.doAnswer = function() {
-		trace("Send answer to peer");
-    	var offer = this.peerConn.remoteDescription;
-    	var answer = this.peerConn.createAnswer(offer.toSdp(), {audio:true,video:true});
-	    this.peerConn.setLocalDescription(this.peerConn.SDP_ANSWER, answer);
-    	this.sendMessage({type: 'answer', sdp: answer.toSdp()});
-    	this.peerConn.startIce();
-	};
+    };
+
+    this.doAnswer = function() {
+        trace("Send answer to peer");
+    	this.peerConn.createAnswer(function(desc){
+            _this.peerConn.setLocalDescription(desc);
+    	    _this.sendMessage({type: 'answer', descType: desc.type, sdp: desc.sdp});
+        });
+    };
 }
 
 function startVideoCall(jid) {
@@ -137,7 +134,7 @@ function handlePeerMessage(msg, jid) {
 			try {
 				remotePeers[i].processSignalingMessage(msg);
 			} catch(e) {
-				trace("Signaling message error: " + e.description);
+				trace("Signaling message error: " + e.message);
 			}
 			return;
 		}
