@@ -1,189 +1,461 @@
-$(document).ready(function(){
-	$(window).resize(function() {
-		// text chat height    
-		$("#chatPanel").css("max-height", $(document).height() 
-			- $("#inputPanel").height() 
-			- parseInt($("#chatPanel").css("margin")) * 2);
-		$("#chatPanel").scrollTop($("#chatPanel")[0].scrollHeight);
-		
-		$(".videoDiv").draggable()/*.resizable()
-			.resize(function() {
-				// resize video tag
-				$(this).find("video").width($(this).css("width"));
-				$(this).find("video").height($(this).css("height"));
-			})*/;
-		
-		// remote video
-		/*var margin = parseInt($("#video-s").css("margin"));
-		var width = $("#video-f").width();
-		if (width <= 0) {
-			return;
-		}
-		var height = $("#video-f").height();
-		if (height / width < 0.75) { // wider
-			var newWidth = height * 4 / 3;
-			$("#remoteView").width(newWidth).height(height)
-				.css("margin-left", (width - newWidth) / 2)
-				.css("margin-top", 0);
-		    // local video
-    		$("#video-s").css("right", 
-	    		(width - newWidth) / 2 + $("#textPanel").width())
-                .css("bottom", 150);
-		} else {
-			var newHeight = width * 3 / 4;
-			$("#remoteView").width(width).height(newHeight)
-				.css("margin-top", (height - newHeight) / 2)
-				.css("margin-left", 0);
-            $("#video-s").css("right", $("#textPanel").width())
-                .css("bottom", 150 + (height - newHeight) / 2);
-		}*/
-	});
-		
-    $("#otherHead").click(function(){
-        $("#otherUser").slideToggle();
-    });
+var stats = null;
 
-    $(".personDetail").hover(function(){
-        if ($(this).find(".userOper").length == 1) {
-            $(this).find(".userOper").show();
-        }
-    }, function(){
-        if ($(this).find(".userOper").length == 1) {
-            $(this).find(".userOper").hide();
-        }
-    });
-
-    $(".addUser").click(addUser);
-    $(".deleteUser").click(deleteUser);
-
-	// text chat height    
-	$("#chatPanel").css("max-height", $(document).height() 
-		- $("#inputPanel").height() 
-		- parseInt($("#chatPanel").css("margin")) * 2);
-		
-    $("#chatSend").click(function(){
-        sendMessage();
-    });
-
-    $("#chatInput").keypress(function(event){
-        if (event.keyCode == 13) { // enter pressed
-            sendMessage();
-        }
-    });
-
-    $(".startVideo").click(function(){
-        startVideo();
-    });
-    $("#startAllVideo").click(function(){
-        startVideo();
-    });
-    $("#videoStopBtn").click(function(){
-        stopVideo();
-    });
-
-    $("#effect1").click(function(){
-        soundEffect.use(0);
-    });
-
-    $("#effect2").click(function(){
-        soundEffect.use(1);
-    });
-
-    $("#effect3").click(function(){
-        soundEffect.use(2);
-    });
-
-    $("#effect4").click(function(){
-        soundEffect.use(3);
-    });
+var arca = null;
     
-    $(".effectBtn").click(function() {
-		addMessage(-1, "System", $(this).attr("id") + " has been applied");
-	});
+var ratio = 4 / 3, // containerWidth / containerHeight
+    renderer = null,
+    scene = null,
+    camera = null,
+    cube = null,
+    animating = null,
+    targetLight = null,
+    ballPlane = null;    
+    
+var muted = false,
+    useEffect = true;
+    
+var wallSize = {
+        x: 1600,
+        y: 1200,
+        z: 2000
+    };
+    
+var mousePressed = false,
+    touchPressed = false;
+
+// things loaded
+var loaded = {},
+    allLoaded = false;
+
+$(document).ready(function() {
+    // stats
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    document.body.appendChild(stats.domElement);
+    
+    // container size
+    var w = $(window).width();
+    var h = $(window).height();
+    if (w / h > ratio) {
+        w = h * ratio;
+    } else {
+        h = w / ratio;
+    }
+    $('#container').css({width: w, height: h});
+    
+    // renderer
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(w, h);
+    // enable shadows on the renderer
+    renderer.shadowMapEnabled = true;
+    $('#container').append(renderer.domElement);
+    
+    // scene
+    scene = new THREE.Scene();
+    
+    // camera
+    camera = new THREE.PerspectiveCamera(60, ratio, 1, 4000);
+    camera.position.set(0, 0, 500 * Math.sqrt(3));
+    scene.add(camera);
+    
+    // light
+    var light = new THREE.PointLight(0xffffff);
+    scene.add(light);
+    
+    arca = new ArcaLands();
+    
+    // walls
+    var wallPos = [new THREE.Vector3(wallSize.x / 2, 0, -wallSize.z / 2), 
+                   new THREE.Vector3(0, -wallSize.y / 2, -wallSize.z / 2), 
+                   new THREE.Vector3(-wallSize.x / 2, 0, -wallSize.z / 2), 
+                   new THREE.Vector3(0, wallSize.y / 2, -wallSize.z / 2)];
+    var wallRot = [new THREE.Vector3(0, Math.PI / 2, 0),
+                   new THREE.Vector3(Math.PI / 2, 0, 0)]
+    arca.walls = [];
+    var wallMap = THREE.ImageUtils.loadTexture('image/wall.jpg');
+    for (var i = 0; i < 4; ++i) {
+        var x = (i % 2) ? wallSize.x : wallSize.z;
+        var y = (i % 2) ? wallSize.z : wallSize.y;
+        arca.walls[i] = new THREE.Mesh(
+                new THREE.PlaneGeometry(x, y), 
+                new THREE.MeshLambertMaterial({
+                    map: wallMap,
+                    side: THREE.DoubleSide
+        }));
+        arca.walls[i].position = wallPos[i];
+        arca.walls[i].rotation = wallRot[i % 2];
+        scene.add(arca.walls[i]);
+    }
+    // farthest wall
+    arca.walls[4] = new THREE.Mesh(
+            new THREE.PlaneGeometry(wallSize.x, wallSize.y),
+            new THREE.MeshLambertMaterial({
+                map: wallMap
+            })
+    );
+    arca.walls[4].position.set(0, 0, -wallSize.z);
+    scene.add(arca.walls[4]);
+    
+    // light when hit targets
+    targetLight = new THREE.PointLight(0xff0000, 0.0, 1000);
+    scene.add(targetLight);
+    
+    // create targets
+    arca.startGame();
+    
+    // targets
+    initTargets();
+    
+    // board
+    arca.board.mesh = new THREE.Mesh(new THREE.CubeGeometry(
+            arca.board.size.x, arca.board.size.y, arca.board.size.z),
+            new THREE.MeshLambertMaterial({
+                color: 0xffff00,
+                transparent: true,
+                opacity: 0.8
+            })
+    );
+    arca.board.mesh.position = arca.board.position;
+    scene.add(arca.board.mesh);
+    
+    initDom();
+    initSound();
+    
+    addMouseHandler();
+    
+    loadModel();
+    
 });
 
-function deleteUser() {
-    $("#otherUser").append($(this).parent().parent());
-    $(this).parent().hide();
-    $(this).parent().append('<img src="image/add.png" alt="add user" class="addUser" title="Add this user" />');
-    $(this).parent().find("img.addUser").click(addUser);
-    $(this).parent().find("img.startVideo").remove();
-    $(this).parent().find("img.deleteUser").remove();
+function run() {
+    stats.begin();
+    
+    arca.update();
+    renderer.render(scene, camera);
+    
+    stats.end();
+    
+    requestAnimationFrame(run);
 }
 
-function addUser() {
-    $("#personPanel").append($(this).parent().parent());
-    $(this).parent().hide();
-    $(this).parent().append('<img src="image/video.png" alt="start video" class="startVideo" title="Start video chat" />');
-    $(".startVideo").click(function(){
-        startVideo();
+function addMouseHandler() {
+    mousePressed = false;
+    var dom = renderer.domElement;
+    var cx = $('#container').width();
+    var cy = $('#container').height();
+    
+    dom.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        
+        mousePressed = true;
+    }, false);
+    
+    dom.addEventListener('mouseup', function(e) {
+        e.preventDefault();
+        
+        if (allLoaded && arca.ball.status === 
+                Ball.prototype.Status.BEFORE_START) {
+            arca.ball.release();
+        }
+        
+        mousePressed = false;
+    }, false);
+    
+    dom.addEventListener('mousemove', function(e) {
+        e.preventDefault();
+        
+        if (allLoaded && arca.gameStatus !== arca.GameStatus.PAUSED) {
+            arca.board.move(e.pageX - parseInt($('#container')
+                    .css('margin-left')), e.pageY, cx, cy);
+        }
+    }, false);
+    
+    dom.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        
+        touchPressed = true;
+        
+        if (arca.gameStatus === ArcaLands.prototype.GameStatus.GAME_LOSE) {
+            $('#gameOver').fadeOut();
+            arca.startGame();
+            initTargets();
+        }
+    }, false);
+    
+    dom.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        
+        if (allLoaded && arca.ball.status === 
+                Ball.prototype.Status.BEFORE_START) {
+            arca.ball.release();
+        }
+        
+        touchPressed = false;
+    }, false);
+    
+    dom.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        
+        if (allLoaded && arca.gameStatus !== arca.GameStatus.PAUSED) {
+            var x = e.touches[0].pageX * 1600 / 1280;
+            var y = e.touches[0].pageY * 812 / 680;
+            arca.board.move(x - parseInt($('#container')
+                    .css('margin-left')), y, cx, cy);
+            $('#x').text(x);
+            $('#y').text(y);
+        }
+    }, false);
+}
+
+function initDom() {
+    var w = $(window).width();
+    var h = $(window).height();
+    // game over label
+    var padding = parseInt($('#gameOver').css('padding'));
+    $('#gameOver').css({
+        left: (w - parseInt($('#gameOver').css('width'))) / 2 - padding,
+        top: (h - parseInt($('#gameOver').css('height'))) / 2 - padding
+    }).click(function() {
+        if (arca.gameStatus !== ArcaLands.prototype.GameStatus.GAME_OVER) {
+            $('#gameOver').fadeOut();
+        }
+        arca.startGame();
+        initTargets();
     });
-    $(this).parent().append('<img src="image/minus.png" alt="delete user" class="deleteUser" title="Delete this user" />');
-    $(this).parent().find("img.deleteUser").click(deleteUser);
-    $(this).parent().find("img.addUser").remove();
+    
+    // pause
+    $('#pause').click(function() {
+        pauseToggle();
+    });
+    
+    // credits
+    $('#credits').click(function() {
+        $('#creditsPanel').fadeToggle();
+    });
+    $('#creditsPanel').css({
+        left: (w - parseInt($('#creditsPanel').css('width'))) / 2 - padding,
+        top: (h - parseInt($('#creditsPanel').css('height'))) / 2 - padding
+    }).click(function() {
+        $('#creditsPanel').fadeOut();
+    });
+    
+    // effect toggle
+    $('#effect').click(function() {
+        useEffect = !useEffect;
+        if (useEffect) {
+            // add effect
+            $('.space').each(function() {
+                $(this).data('effectId', $(this).jWebAudio('effect', '3d'));
+                var vol = $(this).data('volume') * 3;
+                $(this).jWebAudio('options', {
+                    volume: vol
+                });
+                $(this).data('volume', vol);
+                console.log(vol);
+            });
+            $('#effect').text('Disable 3D Effect')
+                        .css('background-color', '#ff6');
+        } else {
+            // remove effect
+            $('.space').each(function() {
+                $(this).jWebAudio('deleteEffect', $(this).data('effectId'));
+                $(this).removeData('effectId');
+                var vol = $(this).data('volume') / 3;
+                $(this).jWebAudio('options', {
+                    volume: vol
+                });
+                $(this).data('volume', vol);
+                console.log(vol);
+            });
+            $('#effect').text('Enable 3D Effect')
+                        .css('background-color', '#f60');
+        }
+    });
 }
 
-// TODO: clientId, clientName and time should be from the server. Currently use time on client side.
-function addMessage(clientId, clientName, content) {
-    if (content == null || content == '') {
-        return;
+function initSound() {
+    // sound effects
+    var types = ['wood', 'metal', 'stone', 'break', 'wall', 'board'];
+    for (var i in types) {
+        $('#' + types[i]).jWebAudio('addSoundSource', {
+            url: 'sound/' + types[i] + '.ogg',
+            preLoad: true,
+            callback: function(name) {
+                return function() {
+                    $('#' + name).data('effectId', 
+                            $('#' + name).jWebAudio('effect', '3d'));
+                    loaded[name] = true;
+                    $('#' + name).data('volume', 200); 
+                };
+            }(types[i]),
+            multishot: true,
+            volume: 200
+        });
     }
-    var msg = '<div class="chatMsg"><div class="chatMsgName ';
-    if (clientId == -1) {
-        msg += 'systemColor';
-    } else if (clientId % 2 == 1) {
-        msg += 'clientColor1';
-    } else {
-        msg += 'clientColor2';
+    
+    // sweep sound that moves with ball
+    $('#sweep').jWebAudio('addSoundSource', {
+        url: 'sound/sweep.ogg',
+        preLoad: true,
+        callback: function() {
+            $('#sweep').data('effectId', $('#sweep').jWebAudio('effect', '3d'));
+            $('#sweep').data('volume', 100);
+            $('#sweep').jWebAudio('play');
+            loaded.sweep = true;
+        },
+        loop: true,
+        volume: 100
+    });
+    
+    // background music
+    $('#background').jWebAudio('addSoundSource', {
+        url: 'sound/background.ogg',
+        preLoad: true,
+        loop: true,
+        callback: function() {
+            $('#background').jWebAudio('play');
+            loaded.background = true;
+        },
+        volume: 20
+    });
+    
+    // mute button
+    $('#mute').click(function() {
+        muted = !muted;
+        $('.sound').jWebAudio('options', {
+            muted: muted
+        });
+        if (muted) {
+            $(this).text('Unmute')
+                    .css('background-color', '#f60');
+        } else {
+            $(this).text('Mute')
+                    .css('background-color', '#ff6');
+        }
+    });
+    
+    // game win
+    $('#gameWin').jWebAudio('addSoundSource', {
+        url: 'sound/win.ogg',
+        preLoad: true,
+        multishot: true,
+        callback: function() {
+            loaded.gameWin = true;
+            $('#gameWin').data('volume', 100);
+            $('#gameWin').data('effectId', 
+                    $('#gameWin').jWebAudio('effect', '3d'));
+        }
+    });
+    // game lose
+    $('#gameLose').jWebAudio('addSoundSource', {
+        url: 'sound/lose.ogg',
+        preLoad: true,
+        multishot: true,
+        callback: function() {
+            loaded.gameLose = true;
+            $('#gameLose').data('volume', 100);
+            $('#gameLose').data('effectId', 
+                    $('#gameLose').jWebAudio('effect', '3d'));
+        }
+    });
+}
+
+function initTargets() {
+    for (var i in arca.targets) {
+        var target = arca.targets[i];
+        var url = target.mapUrl;
+        // materials
+        if (url) {
+            var map = THREE.ImageUtils.loadTexture(url);
+            var material = new THREE.MeshPhongMaterial({
+                map: map
+            });
+            target.mesh = new THREE.Mesh(
+                    new THREE.CubeGeometry(target.size.x, 
+                            target.size.y, target.size.z), 
+                    material);
+        } else {
+            target.mesh = new THREE.Mesh(
+                    new THREE.CubeGeometry(target.size.x, 
+                            target.size.y, target.size.z), 
+                    new THREE.MeshLambertMaterial({
+                        color: colors[Math.ceil(Math.random() 
+                                * (colors.length - 1))]
+                    }));
+        }
+        target.mesh.position = target.position;
+        scene.add(target.mesh);
     }
-    var time = new Date();
-    var timeStr = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
-    msg += '">' + clientName + '</div><div class="chatMsgTime">' + timeStr + '</div><div class="chatMsgText">' + content + '</div></div>';
-    $("#chatPanel").append(msg);
-    $("#chatPanel").scrollTop($("#chatPanel")[0].scrollHeight);
 }
 
-function sendMessage() {
-    addMessage(1, myInfo.bareJid, $("#chatInput").val());
-    sendTextMessage(myInfo.rosters[0], $("#chatInput").val());
-    $("#chatInput").val("");
+function pauseToggle() {
+    if (arca.gameStatus === arca.GameStatus.IN_GAME) {
+        $('#container').css('cursor', 'auto');
+        $('#pause').text('Continue').css('background-color', '#f60');
+        
+        arca.gameStatus = arca.GameStatus.PAUSED;
+        
+    } else if (arca.gameStatus === arca.GameStatus.PAUSED) {
+        $('#container').css('cursor', 'none');
+        $('#pause').text('Pause').css('background-color', '#ff6');
+        
+        arca.gameStatus = arca.GameStatus.IN_GAME;
+    }
 }
 
-function initVideo() {
-    $("#videoContent").hide();
-    $("#videoLoading").show();
+function loadModel() {
+    var loader = new THREE.OBJMTLLoader();
+    loader.addEventListener('load', function(event) {
+        // ball
+        arca.ball.mesh = event.content;
+        arca.ball.mesh.position = arca.ball.position;
+        arca.ball.mesh.scale.set(15, 15, 15);
+        arca.ball.mesh.rotation.x = Math.PI / 2;
+        scene.add(arca.ball.mesh);
+        // light following ball
+        var ballLight = new THREE.PointLight(0x00ff00, 2.0, 500);
+        ballLight.position = arca.ball.position;
+        scene.add(ballLight);
+        
+        // ball plane to show ball position
+        ballPlane = new THREE.Mesh(
+                new THREE.CubeGeometry(wallSize.x, wallSize.y, 5),
+                new THREE.MeshLambertMaterial({
+                    color: 0x66ff00,
+                    transparent: true,
+                    opacity: 0.2
+                })
+        );
+        ballPlane.position.z = arca.ball.position.z + arca.ball.size.z / 2;
+        scene.add(ballPlane);
+        checkLoaded();
+    });
+    loader.load('model/machine.obj', 'model/machine.mtl');
 }
 
-function startVideo() {
-	$("#videoLoading").hide();
-	addMessage(-1, "System", "Please wait for remote side's acception.");
-	addMessage(-1, "System", "<div id='videoTimeDiv'>Timeout in 30 seconds.</div>");
-	$(".chatMsg").last().addClass("videoInvite");
-	videoInviteSecond = 1;
-	videoInvTimeout = setTimeout(videoInviSendTimer, 1000);
-    // FIXME: check null
-    //if (myInfo.rosters.length > 0)
-        startVideoChat(myInfo.rosters[0]);
-}
-
-function videoInviSendTimer() {
-	if (videoInviteSecond < 30) {
-		// Remove last time message
-		$(".videoInvite").last().remove();
-		addMessage(-1, "System", "<div id='videoTimeDiv'>Timout in " + 
-			(60 - videoInviteSecond) + " seconds.</div>");
-		$(".chatMsg").last().addClass("videoInvite");
-		videoInvTimeout = setTimeout(videoInviSendTimer, 1000);
-		videoInviteSecond += 1;
-	} else {
-		denyVideo();
-        addMessage(-1, "System", "Closed because remote has no response.");
-        initVideo();
-	}
-}
-
-function stopVideo() {
-	addMessage(-1, "System", "You have stopped the video chat.");
-    stopVideoChat();
-	initVideo();
+var checkHandle = null;
+function checkLoaded() {
+    if (!allLoaded) {
+        allLoaded = true;
+        $('.sound').each(function() {
+            if (!loaded[$(this).attr('id')]) {
+                allLoaded = false;
+            }
+        });
+        if (allLoaded) {
+            clearInterval(checkHandle);
+            
+            // start game
+            allLoaded = true;
+            // show game panel
+            $('#loading').hide();
+            $('#gamePanel').fadeIn();        
+            run();
+        } else {
+            // check later
+            checkHandle = setInterval(checkLoaded, 500);
+        }
+    }
 }
