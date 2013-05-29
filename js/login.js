@@ -24,7 +24,7 @@ function clearCookie() {
 	for (var i = 0; i < cookies.length; ++i) {
 		var c = cookies[i];
 		var eqPos = c.indexOf("=");
-		var name = eqPos > -1 ? c.substr(0, eqPos) : cookie;
+		var name = eqPos > -1 ? c.substr(0, eqPos) : c;
 		document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
 	}
 }
